@@ -1,0 +1,11 @@
+cp-resources/
+Problems/
+testlib/
+sudoku/
+cube/
+.vscode/
+CodingChallenge2020/
+codeshows/
+
+/in
+/out

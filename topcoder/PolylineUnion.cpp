@@ -1,0 +1,331 @@
+#include<bits/stdc++.h>
+#define ll long long int
+#define ld long double
+#define pi pair<int, int>
+#define all(x) x.begin(), x.end()
+#define allr(x) x.rbegin(), x.rend()
+#define sz(x) ((int)x.size())
+#define ln(x) ((int)x.length())
+#define mp make_pair
+#define pb push_back
+#define ff first
+#define ss second
+#define endl '\n'
+#define dbg(x) cout << #x << ": " << x << endl
+#define clr(x,v) memset(x, v, sizeof(x))
+#define dblout(x) cout << setprecision(x) << fixed;
+#define FASTIO ios_base::sync_with_stdio(false);cin.tie(NULL);cout.tie(NULL);
+using namespace std;
+const int eps = 1e-9;
+const double PI = acos(-1.0);
+const ll mod = 1e9 + 7;
+const int MAXN = 1e6 + 5;
+
+class PolylineUnion
+{
+public:
+    int countComponents(vector <string>);
+};
+
+// POINT
+typedef int ftype;
+// const ftype eps = 1e-9;
+struct point
+{
+    ftype x, y;
+    point() {}
+    point(ftype x, ftype y): x(x), y(y) {}
+    point operator+(const point &p)
+    {
+        return point(x + p.x, y + p.y);
+    }
+    point operator-(const point &p)
+    {
+        return point(x - p.x, y - p.y);
+    }
+    point operator*(const ftype &s)
+    {
+        return point(x * s, y * s);
+    }
+    point operator/(const ftype &s)
+    {
+        return point(x / s, y / s);
+    }
+    bool operator<(const point &p) const
+    {
+        return x < p.x - eps || (abs(x - p.x) < eps && y < p.y - eps);
+    }
+    bool operator==(const point &p) const
+    {
+        return x == p.x && y == p.y;
+    }
+    ftype cross(const point &p)
+    {
+        return x * p.y - p.x * y;
+    }
+    ftype cross(const point &a, const point &b)
+    {
+        return (*this - a).cross(*this - b);
+    }
+};
+
+// Euclidean Distance
+int length2(point a, point b)
+{
+    return (a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y);
+}
+
+int ccw(point a, point b, point c)
+{
+    point v1(b - a), v2(c - a);
+    int t = v1.cross(v2);
+
+    if (t > +eps)
+        return +1;
+    if (t < -eps)
+        return -1;
+    if (v1.x * v2.x < -eps || v1.y * v2.y < -eps)
+        return -1;
+    if (length2(v1, point(0, 0)) < length2(v2, point(0, 0)) - eps)
+        return +1;
+    return 0;
+}
+
+bool intersect(point p1, point p2, point p3, point p4)
+{
+    // special case handling if a segment is just a point
+    bool x = (p1 == p2), y = (p3 == p4);
+    if(x && y)  return p1 == p3;
+    if(x)   return ccw(p3, p4, p1) == 0;
+    if(y)   return ccw(p1, p2, p3) == 0;
+
+    return  ccw(p1, p2, p3) * ccw(p1, p2, p4) <= 0  &&
+            ccw(p3, p4, p1) * ccw(p3, p4, p2) <= 0;
+}
+
+int PolylineUnion::countComponents(vector <string> polylines)
+{
+    string A;
+    for(auto x : polylines)
+        A += x;
+    vector<vector<point>> lines;
+    stringstream ss(A);
+    while(!ss.eof())
+    {
+        string B;
+        ss >> B; // one polyline
+        for(auto &x : B)
+            if(x == '-')
+                x = ' ';
+        lines.pb(vector<point>());
+        stringstream ss2(B);
+        while(!ss2.eof())
+        {
+            string C;
+            ss2 >> C; // one point of the polyline
+            for(auto &x : C)
+                if(x == ',')
+                    x = ' ';
+            stringstream ss3(C);
+            int x, y;
+            ss3 >> x >> y;
+            lines.back().pb(point(x, y));
+        }
+    }
+
+    int n = sz(lines);
+    vector<vector<bool>> connect(n, vector<bool>(n));
+
+    for(int i = 0; i < n; i++)
+    {
+        for(int j = 0; j < n; j++)
+        {
+            // check if line i intersects with line j and any point
+            bool can = false;
+            for(int k = 0; k < sz(lines[i]) - 1; k++)
+                for(int l = 0; l < sz(lines[j]) - 1; l++)
+                    if(intersect(lines[i][k], lines[i][k + 1], lines[j][l], lines[j][l + 1]))
+                        can = true;
+            for(int k = 0; k < sz(lines[i]); k++)
+                for(int l = 0; l < sz(lines[j]) - 1; l++)
+                    if(intersect(lines[i][k], lines[i][k], lines[j][l], lines[j][l + 1]))
+                        can = true;
+            for(int k = 0; k < sz(lines[i]) - 1; k++)
+                for(int l = 0; l < sz(lines[j]); l++)
+                    if(intersect(lines[i][k], lines[i][k + 1], lines[j][l], lines[j][l]))
+                        can = true;
+            for(int k = 0; k < sz(lines[i]); k++)
+                for(int l = 0; l < sz(lines[j]); l++)
+                    if(intersect(lines[i][k], lines[i][k], lines[j][l], lines[j][l]))
+                        can = true;
+            connect[i][j] = can;
+        }
+    }
+
+    // now simple find connected components based on the intersection
+    vector<bool> vis(n);
+    function<void(int)> dfs = [&](int u)
+    {
+        vis[u] = 1;
+        for(int i = 0; i < n; i++)
+            if(!vis[i] && connect[u][i])
+                dfs(i);
+    };
+
+    int comp = 0;
+    for(int i = 0; i < n; i++)
+        if(!vis[i])
+            dfs(i), comp++;
+    return comp;
+}
+// BEGIN KAWIGIEDIT TESTING
+// Generated by KawigiEdit 2.1.4 (beta) modified by pivanof
+bool KawigiEdit_RunTest(int testNum, vector <string> p0, bool hasAnswer, int p1)
+{
+    cout << "Test " << testNum << ": [" << "{";
+    for (int i = 0; int(p0.size()) > i; ++i)
+    {
+        if (i > 0)
+        {
+            cout << ",";
+        }
+        cout << "\"" << p0[i] << "\"";
+    }
+    cout << "}";
+    cout << "]" << endl;
+    PolylineUnion *obj;
+    int answer;
+    obj = new PolylineUnion();
+    clock_t startTime = clock();
+    answer = obj->countComponents(p0);
+    clock_t endTime = clock();
+    delete obj;
+    bool res;
+    res = true;
+    cout << "Time: " << double(endTime - startTime) / CLOCKS_PER_SEC << " seconds" << endl;
+    if (hasAnswer)
+    {
+        cout << "Desired answer:" << endl;
+        cout << "\t" << p1 << endl;
+    }
+    cout << "Your answer:" << endl;
+    cout << "\t" << answer << endl;
+    if (hasAnswer)
+    {
+        res = answer == p1;
+    }
+    if (!res)
+    {
+        cout << "DOESN'T MATCH!!!!" << endl;
+    }
+    else if (double(endTime - startTime) / CLOCKS_PER_SEC >= 2)
+    {
+        cout << "FAIL the timeout" << endl;
+        res = false;
+    }
+    else if (hasAnswer)
+    {
+        cout << "Match :-)" << endl;
+    }
+    else
+    {
+        cout << "OK, but is it right?" << endl;
+    }
+    cout << "" << endl;
+    return res;
+}
+int main()
+{
+    bool all_right;
+    all_right = true;
+
+    vector <string> p0;
+    int p1;
+
+    {
+        // ----- test 0 -----
+        string t0[] = {"0,0-10,10 0,10-10,0"};
+        p0.assign(t0, t0 + sizeof(t0) / sizeof(t0[0]));
+        p1 = 1;
+        all_right = KawigiEdit_RunTest(0, p0, true, p1) && all_right;
+        // ------------------
+    }
+
+    {
+        // ----- test 1 -----
+        string t0[] = {"0,0-10,5 5,0-15,5-10,10-5,5"};
+        p0.assign(t0, t0 + sizeof(t0) / sizeof(t0[0]));
+        p1 = 2;
+        all_right = KawigiEdit_RunTest(1, p0, true, p1) && all_right;
+        // ------------------
+    }
+
+    {
+        // ----- test 2 -----
+        string t0[] = {"1", "3,0-5,5 4,0-4,20"};
+        p0.assign(t0, t0 + sizeof(t0) / sizeof(t0[0]));
+        p1 = 2;
+        all_right = KawigiEdit_RunTest(2, p0, true, p1) && all_right;
+        // ------------------
+    }
+
+    {
+        // ----- test 3 -----
+        string t0[] = {"10,0-10,1-9,2-9,3-8,4 ", "8,2-9,2-10,3 ", "12,2-11,2-9,1"};
+        p0.assign(t0, t0 + sizeof(t0) / sizeof(t0[0]));
+        p1 = 1;
+        all_right = KawigiEdit_RunTest(3, p0, true, p1) && all_right;
+        // ------------------
+    }
+
+    {
+        // ----- test 4 -----
+        string t0[] = {"0,0-10,0-0,0 20,0-8,0-20,0"};
+        p0.assign(t0, t0 + sizeof(t0) / sizeof(t0[0]));
+        p1 = 1;
+        all_right = KawigiEdit_RunTest(4, p0, true, p1) && all_right;
+        // ------------------
+    }
+
+    {
+        // ----- test 5 -----
+        string t0[] = {"1,1 2,2 3,3 4,4 3,3-4,4"};
+        p0.assign(t0, t0 + sizeof(t0) / sizeof(t0[0]));
+        p1 = 3;
+        all_right = KawigiEdit_RunTest(5, p0, true, p1) && all_right;
+        // ------------------
+    }
+
+    {
+        // ----- test 6 -----
+        string t0[] = {"10,10-20,10 20,10-15,18 15,18-10,10"};
+        p0.assign(t0, t0 + sizeof(t0) / sizeof(t0[0]));
+        p1 = 1;
+        all_right = KawigiEdit_RunTest(6, p0, true, p1) && all_right;
+        // ------------------
+    }
+
+    {
+        // ----- test 7 -----
+        string t0[] = {"1,1 1,1"};
+        p0.assign(t0, t0 + sizeof(t0) / sizeof(t0[0]));
+        p1 = 1;
+        all_right = KawigiEdit_RunTest(7, p0, true, p1) && all_right;
+        // ------------------
+    }
+
+    if (all_right)
+    {
+        cout << "You're a stud (at least on the example cases)!" << endl;
+    }
+    else
+    {
+        cout << "Some of the test cases had errors." << endl;
+    }
+    return 0;
+}
+// END KAWIGIEDIT TESTING
+
+
+
+//Powered by KawigiEdit 2.1.4 (beta) modified by pivanof!

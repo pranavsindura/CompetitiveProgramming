@@ -1,0 +1,9 @@
+loop i increasing order 0, 1, 2, ... i-1, i
+	loop j in decreasing order W -> wt[i]
+		dp[j] = max val[i] + dp[j - wt[i]]
+
+[.......................................................]
+0                                                       W
+[i-1...................i-1..............i-1..........i-1]
+now we will process ith iteration
+[i-1......................i-1 | i i i i i i i i i i i i ]                

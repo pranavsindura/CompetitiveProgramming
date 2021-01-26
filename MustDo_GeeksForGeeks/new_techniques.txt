@@ -1,0 +1,57 @@
+List of new Techniques Learnt
+
+1. Subarray with given sum
+	It can be broken into two prefixes,
+	Left one with sum -> curr_sum-target
+	Right one with sum -> curr_sum
+
+2. Merging sorted array
+	Bubble sort with Gaps (decreasing logarithmically)
+
+3. Representing two numbers in one number
+	Modulo and Division Trick
+	Number a and b can be represented in x as
+	a = x/large_number
+	b = x%large_number
+
+4. Longest Palindrome Substring
+	Expand in both directions from the centre!
+	For odd and even length separately
+
+5. Use of Slow and Fast Pointer w/ Linked Lists
+	Finding Middle Element
+	Detecting Cycle
+	Removing Cycle
+
+6. List STL Data Structure
+	Delete and insert at any position
+
+7. Greatest Element in Subarray of length k in O(n) time using Queue
+	Using Deque
+	Don't need elements which have bigger element on right
+
+8. Median of Stream using Heaps
+	Two heaps, one for smaller than current median, one for greater
+
+9. Binary Heap Data Structure (Check in DSA Folder)
+	Build Heap
+	Insert
+	Extract top
+	Delete
+	Decrease/Increase
+
+
+10. Strongly Connected Components in DIRECTED Graph using Kosaraju's Algorithm
+	Find topological sort order
+	Reverse graph
+	Process Topsort order in reverse and DFS from the nodes from the last of the topsort order
+	The nodes visited will give SCCs
+
+11. Find Cycle of Given Length K
+	Find a path of length K-1 and then see if the last node leads back to the start Node
+
+	It is kind of backtracking so Mark nodes visited then recurse on children and after that mark the nodes unvisited
+
+12. Counting Problems DP/MEMO
+	Usually Base cases have value 1
+	Most of the times built in a Forward movement i,j increases, depends on previous
