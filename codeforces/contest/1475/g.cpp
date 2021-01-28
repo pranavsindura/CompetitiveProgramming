@@ -32,37 +32,56 @@ void cp()
     vector<int> arr(n);
     for(int &x : arr)
         cin >> x, cnt[x]++;
-
-    set<int> st(all(arr));
-    vector<int> dis(all(st));
-    vector<int> idx(MAXN, -1);
-    for(int i = 0; i < sz(dis); i++)
-        idx[dis[i]] = i;
-
-    vector<int> dp(sz(dis));
-
-    for(int i = 0; i < sz(dis); i++)
+    vector<int> dp(MAXN);
+    for(int i = 1; i < MAXN; i++)
     {
-        dp[i] = max(dp[i], cnt[dis[i]]);
-        for(int j = 1; j <= sqrt(dis[i]); j++)
-        {
-            if(dis[i] % j) continue;
-            int p = j;
-            if(~idx[p] && p != dis[i])
-            {
-                dp[i] = max(dp[i], dp[idx[p]] + cnt[dis[i]]);
-            }
-            int q = dis[i] / j;
-            if(~idx[q] && q != dis[i])
-            {
-                dp[i] = max(dp[i], dp[idx[q]] + cnt[dis[i]]);
-            }
-        }
+        dp[i] += cnt[i];
+        for(int j = 2 * i; j < MAXN; j += i)
+            dp[j] = max(dp[j], dp[i]);
     }
-
     int ans = n - *max_element(all(dp));
     cout << ans << endl;
 }
+
+// void cp()
+// {
+//     int n;
+//     cin >> n;
+//     vector<int> cnt(MAXN);
+//     vector<int> arr(n);
+//     for(int &x : arr)
+//         cin >> x, cnt[x]++;
+
+//     set<int> st(all(arr));
+//     vector<int> dis(all(st));
+//     vector<int> idx(MAXN, -1);
+//     for(int i = 0; i < sz(dis); i++)
+//         idx[dis[i]] = i;
+
+//     vector<int> dp(sz(dis));
+
+//     for(int i = 0; i < sz(dis); i++)
+//     {
+//         dp[i] = max(dp[i], cnt[dis[i]]);
+//         for(int j = 1; j <= sqrt(dis[i]); j++)
+//         {
+//             if(dis[i] % j) continue;
+//             int p = j;
+//             if(~idx[p] && p != dis[i])
+//             {
+//                 dp[i] = max(dp[i], dp[idx[p]] + cnt[dis[i]]);
+//             }
+//             int q = dis[i] / j;
+//             if(~idx[q] && q != dis[i])
+//             {
+//                 dp[i] = max(dp[i], dp[idx[q]] + cnt[dis[i]]);
+//             }
+//         }
+//     }
+
+//     int ans = n - *max_element(all(dp));
+//     cout << ans << endl;
+// }
 
 int main()
 {

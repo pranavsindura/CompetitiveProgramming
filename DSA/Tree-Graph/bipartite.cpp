@@ -77,6 +77,45 @@
 
 // KUHN's ALGORITHM
 
+
+vector<int> mt;
+vector<bool> vis;
+
+bool kuhn(int u, vector<vector<int>> &adj)
+{
+    if(vis[u]) return false;
+    vis[u] = true;
+    for(int v : adj[u])
+    {
+        if(mt[v] == -1 || kuhn(mt[v], adj)) // can find an augmenting path?
+        {
+            mt[v] = u;
+            return true;
+        }
+    }
+    return false;
+}
+
+void cp()
+{
+    // Build graph
+    // Left half has n nodes, right half has m nodes
+
+    mt.assign(m, -1); // which node in left half is the i-th right half node matched to?
+    // Find augmenting path for each node
+    for(int u = 0; u < n; u++)
+    {
+        vis.assign(n, false);
+        kuhn(u, adj); // if(kuhn(u, adj)) match++;
+    }
+    // for all v such that mt[v] != -1, mt[v] and v belong to the maximum matching
+    int matched = 0;
+    for(int i = 0; i < m; i++)
+        if(mt[i] != -1)
+            matched++;
+}
+
+// W/ Greedy Heuristic
 vector<int> mt;
 vector<bool> vis, picked;
 

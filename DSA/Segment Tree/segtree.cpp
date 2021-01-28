@@ -6,10 +6,9 @@ It is a data structure for Monoid
 2. Existence of Identity Element
 
 How to use:
-1. Keep all arrays global
-2. Set identity Element
-3. Fill combine() function
-4. If you use updatept, fix the operation
+1. Set identity Element
+2. Fill combine() function
+3. If you use updatept, set the update required
 */
 
 using ftype = int;
@@ -120,5 +119,44 @@ int kth_one(int v, int tl, int tr, int k) // Index of kth one
             return kth_one(v << 1, tl, tm, k);
         else
             return kth_one(v << 1 | 1, tm + 1, tr, k - t[v << 1]);
+    }
+}
+
+
+// For range max Segment tree
+// Replacement of BS + range query
+int first_above(int v, int tl, int tr, int k) // Index of first element >= k
+{
+    if(k > t[v])
+        return -1; // Does not exist
+    if(tl == tr)
+        return tl;
+    else
+    {
+        int tm = (tl + tr) >> 1;
+        if(t[v << 1] >= k)
+            return first_above(v << 1, tl, tm, k);
+        else
+            return first_above(v << 1 | 1, tm + 1, tr, k);
+    }
+}
+
+int first_above(int v, int tl, int tr, int k, int l) // Index (>=l) of first element >= k
+{
+    if(tr < l) // Out of bounds
+        return -1;
+    if(k > t[v])
+        return -1; // Does not exist
+    if(tl == tr)
+        return tl;
+    else
+    {
+        int tm = (tl + tr) >> 1;
+        if(t[v << 1] >= k)
+        {
+            int L = first_above(v << 1, tl, tm, k, l);
+            if(L != -1) return L;
+        }
+        return first_above(v << 1 | 1, tm + 1, tr, k, l);
     }
 }

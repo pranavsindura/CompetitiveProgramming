@@ -27,27 +27,24 @@ const int MAXN = 1e5 + 5;
 void cp()
 {
     int n;
-    while(cin >> n && n)
+    vector<int> arr(2 * n);
+    for(int &x : arr)
+        cin >> x, x--;
+    vector<int> cnt(n), ending(n), inter(n);
+    vector<array<int, 3>> ranges(n);
+    for(int i = 0; i < n; i++) ranges[i][2] = i;
+    for(int i = 0; i < 2 * n; i++)
     {
-        vector<int> h(n);
-        for(int &x : h)
-            cin >> x;
-        h.push_back(-1);
-        ll ans = 0;
-        stack<pi> st;
-        for(int i = 0; i <= n; i++)
-        {
-            int pos = i;
-            while(!st.empty() && st.top().first >= h[i])
-            {
-                pos = st.top().second;
-                ans = max(ans, (i - pos) * 1LL * st.top().first);
-                st.pop();
-            }
-            st.push({h[i], pos});
-        }
-        cout << ans << endl;
+        ranges[arr[i]][cnt[arr[i]]] = i;
+        cnt[arr[i]]++;
+        ending[i] = cnt[arr[i]] == 2;
     }
+    for(int i = 2 * n - 2; i >= 0; i--)
+        ending[i] += ending[i - 1];
+
+    sort(all(ranges));
+
+   
 }
 
 int main()
@@ -62,3 +59,4 @@ int main()
     }
     return 0;
 }
+
