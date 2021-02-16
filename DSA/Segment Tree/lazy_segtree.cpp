@@ -22,9 +22,9 @@ ftype combine(ftype L, ftype R)
 
 }
 
-ftype push(int v, int tl, int tr)
+void push(int v, int tl, int tr)
 {
-
+    int tm = (tl + tr) >> 1;
 }
 
 void build(int v, int tl, int tr)
@@ -125,7 +125,7 @@ ftype querypt(int v, int tl, int tr, int pos)
     }
 }
 
-// Rnage query
+// Range query
 ftype query(int v, int tl, int tr, int l, int r)
 {
     if(l > r) return e;

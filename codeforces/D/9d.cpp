@@ -24,26 +24,40 @@ const ll mod = 1e9 + 7;
 const int inf = 1e7;
 const int MAXN = 1e5 + 5;
 
-mt19937_64 rng(chrono::steady_clock::now().time_since_epoch().count());
-#define get(st, ed)  uniform_int_distribution<int>(st, ed)(rng)
+int n, h;
+ll dp[40][40][40][2];
 
-int n;
-int solve(int i, int j)
+ll solve(int l, int r, int d, int make)
 {
-    if(i == 1 && j == n) return 1;
+    ll &ret = dp[l][r][d][make];
+    if(~ret) return ret;
 
-    int ans = 0;
-    if(i > 1) ans += solve(i - 1, j);
-    if(j < n) ans += solve(i, j + 1);
+    if(l > r) return ret = 1;
+    if(l == r) return ret = make ? d >= h : d < h;
 
-    return ans;
+    ll ans = 0;
+    for(int i = l; i <= r; i++)
+    {
+        if(make)
+        {
+            if(i + 1 <= r)
+                ans += solve(l, i - 1, d + 1, 0) * solve(i + 1, r, d + 1, 1);
+            if(i - 1 >= l)
+                ans += solve(l, i - 1, d + 1, 1) * solve(i + 1, r, d + 1, 0);
+            if(i - 1 >= l && i + 1 <= r)
+                ans += solve(l, i - 1, d + 1, 1) * solve(i + 1, r, d + 1, 1);
+        }
+        else
+            ans += solve(l, i - 1, d + 1, 0) * solve(i + 1, r, d + 1, 0);
+    }
+    return ret = ans;
 }
 
 void cp()
 {
-    int m;
-    cin >> n >> m;
-    cout << solve(m, m) << endl;
+    cin >> n >> h;
+    clr(dp, -1);
+    cout << solve(1, n, 1, 1) << endl;
 }
 
 int main()
@@ -51,11 +65,10 @@ int main()
     FASTIO;
     int t;
     t = 1;
-    cin >> t;
+    // cin >> t;
     while(t--)
     {
         cp();
     }
     return 0;
 }
-
