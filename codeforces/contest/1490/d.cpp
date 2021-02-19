@@ -22,27 +22,37 @@ const double PI = acos(-1.0);
 const double eps = 1e-9;
 const ll mod = 1e9 + 7;
 const int inf = 1e7;
-const int MAXN = 2e5 + 5;
+const int MAXN = 1e5 + 5;
 
 void cp()
 {
     int n;
     cin >> n;
-    vector<array<int, 2>> arr(n);
-    for(auto &v : arr)
-        cin >> v[0] >> v[1];
-    sort(all(arr));
-    int ans = inf;
-    do
+    vector<int> arr(n), pos(n);
+    for(int &x : arr)
+        cin >> x, x--;
+    for(int i = 0; i < n; i++)
+        pos[arr[i]] = i;
+    vector<vector<int>> rmax(n, vector<int>(n));
+    for(int i = 0; i < n; i++) rmax[i][i] = arr[i];
+    for(int i = 0; i < n; i++)
+        for(int j = i + 1; j < n; j++)
+            rmax[i][j] = max(rmax[i][j - 1], arr[j]);
+
+    vector<int> dp(n);
+    function<void(int, int, int)> dfs = [&](int l, int r, int h)
     {
-        int me = n;
-        for(int i = 1; i < n; i++)
-            me += max(arr[i - 1][1], arr[i][0]);
-        me += max(arr[n - 1][1], arr[0][0]);
-        ans = min(ans, me);
-    }
-    while(next_permutation(all(arr)));
-    cout << ans << endl;
+        if(l > r) return;
+        int mx = rmax[l][r];
+        int p = pos[mx];
+        dp[p] = h;
+        dfs(l, p - 1, h + 1);
+        dfs(p + 1, r, h + 1);
+    };
+    dfs(0, n - 1, 0);
+    for(int x : dp)
+        cout << x << " ";
+    cout << endl;
 }
 
 int main()
@@ -50,7 +60,7 @@ int main()
     FASTIO;
     int t;
     t = 1;
-    // cin >> t;
+    cin >> t;
     while(t--)
     {
         cp();

@@ -22,27 +22,45 @@ const double PI = acos(-1.0);
 const double eps = 1e-9;
 const ll mod = 1e9 + 7;
 const int inf = 1e7;
-const int MAXN = 2e5 + 5;
+const int MAXN = 1e5 + 5;
 
 void cp()
 {
     int n;
     cin >> n;
-    vector<array<int, 2>> arr(n);
-    for(auto &v : arr)
-        cin >> v[0] >> v[1];
+    vector<ll> arr(n);
+    for(ll &x : arr)
+        cin >> x;
+
+    vector<pi> pos;
+    for(int i = 0; i < n; i++)
+    	pos.push_back({arr[i], i});
+
     sort(all(arr));
-    int ans = inf;
-    do
+    sort(all(pos));
+
+    vector<ll> pref(n);
+    partial_sum(all(arr), pref.begin());
+
+    vector<int> win(n);
+    win[n - 1] = 1;
+    for(int i = n - 2; i >= 0; i--)
     {
-        int me = n;
-        for(int i = 1; i < n; i++)
-            me += max(arr[i - 1][1], arr[i][0]);
-        me += max(arr[n - 1][1], arr[0][0]);
-        ans = min(ans, me);
+        ll p = pref[i];
+        if(p >= arr[i + 1] && win[i + 1]) win[i] = 1;
     }
-    while(next_permutation(all(arr)));
-    cout << ans << endl;
+
+    int m = 0;
+    vector<int> can;
+    for(int i = 0; i < n; i++)
+        if(win[i])
+            m++, can.push_back(pos[i].second);
+    sort(all(can));
+    
+    cout << m << endl;
+    for(int x : can)
+        cout << x + 1 << " ";
+    cout << endl;
 }
 
 int main()
@@ -50,7 +68,7 @@ int main()
     FASTIO;
     int t;
     t = 1;
-    // cin >> t;
+    cin >> t;
     while(t--)
     {
         cp();

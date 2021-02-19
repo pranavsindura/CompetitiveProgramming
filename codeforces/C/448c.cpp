@@ -22,26 +22,31 @@ const double PI = acos(-1.0);
 const double eps = 1e-9;
 const ll mod = 1e9 + 7;
 const int inf = 1e7;
-const int MAXN = 2e5 + 5;
+const int MAXN = 1e5 + 5;
+
+vector<int> A;
+
+int solve(int l, int r, int x)
+{
+    if(l > r) return 0;
+
+    int p = min_element(A.begin() + l, A.begin() + r + 1) - begin(A);
+    int mn = A[p];
+
+    int ans = min(r - l + 1LL, solve(l, p - 1, mn) + 0LL + solve(p + 1, r, mn) + mn - x);
+    return ans;
+}
 
 void cp()
 {
     int n;
     cin >> n;
-    vector<array<int, 2>> arr(n);
-    for(auto &v : arr)
-        cin >> v[0] >> v[1];
-    sort(all(arr));
-    int ans = inf;
-    do
-    {
-        int me = n;
-        for(int i = 1; i < n; i++)
-            me += max(arr[i - 1][1], arr[i][0]);
-        me += max(arr[n - 1][1], arr[0][0]);
-        ans = min(ans, me);
-    }
-    while(next_permutation(all(arr)));
+    A.resize(n);
+    for(int &x : A)
+        cin >> x;
+
+    int ans = solve(0, n - 1, 0);
+
     cout << ans << endl;
 }
 

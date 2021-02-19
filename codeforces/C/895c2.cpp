@@ -53,13 +53,13 @@ void createBasis(int x)
 
 int fpow(int x, int y)
 {
-    int res=1;
-    while(y>0)
+    int res = 1;
+    while(y > 0)
     {
-    	if(y&1)
-    		res = (res%mod * 1LL * x%mod)%mod;
-    	x = (x%mod * 1LL * x%mod)%mod;
-    	y = y/2;
+        if(y & 1)
+            res = (res % mod * 1LL * x % mod) % mod;
+        x = (x % mod * 1LL * x % mod) % mod;
+        y = y / 2;
     }
     return res;
 }
@@ -68,8 +68,8 @@ void cp()
 {
     int n, x;
     cin >> n;
-    int h[71]={0};
-    for(int i=0;i<n;i++)
+    int h[71] = {0};
+    for(int i = 0; i < n; i++)
     {
         cin >> x;
         h[x]++;
@@ -79,7 +79,7 @@ void cp()
         if(h[i])
             createBasis(i);
     }
-    cout << fpow(2,n - tbasis) - 1;
+    cout << fpow(2, n - tbasis) - 1;
 }
 
 int main()

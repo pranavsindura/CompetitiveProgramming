@@ -22,27 +22,28 @@ const double PI = acos(-1.0);
 const double eps = 1e-9;
 const ll mod = 1e9 + 7;
 const int inf = 1e7;
-const int MAXN = 2e5 + 5;
+const int MAXN = 1e5 + 5;
 
 void cp()
 {
-    int n;
-    cin >> n;
-    vector<array<int, 2>> arr(n);
-    for(auto &v : arr)
-        cin >> v[0] >> v[1];
-    sort(all(arr));
-    int ans = inf;
-    do
+    int n, k;
+    cin >> n >> k;
+    vector<int> arr(n);
+    vector<vector<int>> pos(n);
+    for(int i = 0; i < n; i++)
+        arr[i]--, pos[arr[i]].push_back(i);
+
+    int ans = -1;
+    for(int i = 0; i < n; i++)
     {
-        int me = n;
-        for(int i = 1; i < n; i++)
-            me += max(arr[i - 1][1], arr[i][0]);
-        me += max(arr[n - 1][1], arr[0][0]);
-        ans = min(ans, me);
+        for(int p : pos[i])
+        {
+            // odd
+            int len = k + (k % 2 == 0);
+            int half = len / 2;
+            if(!(p >= half && p + half < n)) continue;
+        }
     }
-    while(next_permutation(all(arr)));
-    cout << ans << endl;
 }
 
 int main()

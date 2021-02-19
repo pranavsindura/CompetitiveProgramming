@@ -1,9 +1,6 @@
 from random import randint
 
-n = 10000
-h = randint(0, 1e8)
-
-print(n, h)
+n = 4
+print(n)
 for i in range(n):
-	print(randint(0, 1e8), end = ' ')
-print()
+	print(randint(1, 10), randint(1, 10))

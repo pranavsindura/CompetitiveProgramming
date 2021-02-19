@@ -24,25 +24,37 @@ const ll mod = 1e9 + 7;
 const int inf = 1e7;
 const int MAXN = 2e5 + 5;
 
+vector<int> arr;
+int dp[MAXN][2];
+
+int solve(int i, int par)
+{
+    if(arr[i] % 2 == par) return 0;
+
+    int &ret = dp[i][par];
+    if(~ret) return ret;
+
+    ret = inf;
+    if(i - arr[i] >= 0) ret = min(ret, 1 + solve(i - arr[i], par));
+    if(i + arr[i] < sz(arr)) ret = min(ret, 1 + solve(i + arr[i], par));
+    return ret;
+}
+
 void cp()
 {
     int n;
     cin >> n;
-    vector<array<int, 2>> arr(n);
-    for(auto &v : arr)
-        cin >> v[0] >> v[1];
-    sort(all(arr));
-    int ans = inf;
-    do
+    arr.resize(n);
+    for(int &x : arr)
+        cin >> x;
+    clr(dp, -1);
+    for(int i = 0; i < n; i++)
     {
-        int me = n;
-        for(int i = 1; i < n; i++)
-            me += max(arr[i - 1][1], arr[i][0]);
-        me += max(arr[n - 1][1], arr[0][0]);
-        ans = min(ans, me);
+        int step = solve(i, (arr[i] % 2) ^ 1);
+        if(step == inf) step = -1;
+        cout << step << " ";
     }
-    while(next_permutation(all(arr)));
-    cout << ans << endl;
+    cout << endl;
 }
 
 int main()

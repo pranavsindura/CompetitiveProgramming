@@ -24,57 +24,24 @@ const ll mod = 1e9 + 7;
 const int inf = 1e7;
 const int MAXN = 1e5 + 5;
 
-vector<int> A;
-int gen()
-{
-    int n = rand() % 100000 + 2;
-    A.assign(n, 0);
-    iota(all(A), 1);
-    random_shuffle(all(A));
-    return n;
-}
-
-int get_ans()
-{
-    return max_element(all(A)) - begin(A) + 1;
-}
-
-int get(int l, int r)
-{
-    int p = max_element(A.begin() + l - 1, A.begin() + r) - begin(A);
-    int x = -1, num = 0;
-    for(int i = l - 1; i < r; i++)
-        if(i != p && A[i] > num)
-            num = A[i], x = i;
-    return x + 1;
-}
-
 int QCNT;
 int query(int l, int r)
 {
     QCNT++;
-    if(QCNT > 20)
-    {
-        cout << sz(A) << endl;
-        for(int x : A)
-            cout << x << " ";
-        cout << endl;
-        exit(0);
-    }
+    assert(QCNT <= 20);
     assert(l < r);
-    // cout << "? " << l << " " << r << endl;
-    // cout.flush();
-    // int x;
-    // cin >> x;
-    // return x;
-    return get(l, r);
+    cout << "? " << l << " " << r << endl;
+    cout.flush();
+    int x;
+    cin >> x;
+    return x;
 }
 
 void cp()
 {
-    int n = gen();
-    QCNT = 0;
-    // cin >> n;
+    int n;
+    cin >> n;
+
     int l = 1, r = n;
     int p = query(l, r);
 
@@ -116,24 +83,15 @@ void cp()
         p = ans;
     }
 
-    int ans = get_ans();
-    if(p != ans)
-    {
-        cout << n << endl;
-        for(int x : A)
-            cout << x << " ";
-        cout << endl;
-        cout << p << " " << ans << endl;
-        exit(0);
-    }
+    cout << "! " << p << endl;
+    cout.flush();
 }
 
 int main()
 {
     FASTIO;
     int t;
-    t = 100;
-    srand(time(NULL));
+    t = 1;
     // cin >> t;
     while(t--)
     {

@@ -24,20 +24,6 @@ const ll mod = 1e9 + 7;
 const int inf = 1e7;
 const int MAXN = 1e5 + 5;
 
-int dp[75][1 << 19];
-int freq[75], val[75];
-
-const vector<int> prime = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67};
-
-int get_mask(int n)
-{
-    int mask = 0;
-    for(int i = 0; i < sz(prime); i++)
-        while(n % prime[i] == 0)
-            mask ^= 1 << i, n /= prime[i];
-    return mask;
-}
-
 ll fpow(ll x, ll y)
 {
     ll res = 1;
@@ -51,40 +37,36 @@ ll fpow(ll x, ll y)
     return res;
 }
 
-int solve(int i, int mask)
+ll finv(ll a)
 {
-    ll &ret = dp[i][mask];
-    if(~ret) return ret;
+    return fpow(a, mod - 2);
+}
 
-    if(i > 70) return ret = !mask;
-    if(!freq[i]) return ret = solve(i + 1, mask);
-
-    ll ans = 0;
-    ll p = fpow(2, freq[i] - 1);
-    ans = (ans + (p * solve(i + 1, mask)) % mod) % mod;
-    ans = (ans + (p * solve(i + 1, mask ^ val[i])) % mod) % mod;
-    return ret = ans;
+// With Inverse factorial
+ll fact[MAXN], inv[MAXN], invfact[MAXN];
+void init()
+{
+    fact[0] = 1;
+    for(int i = 1; i < MAXN; i++)
+        fact[i] = (fact[i - 1] % mod * i % mod) % mod;
+    inv[0] = inv[1] = 1;
+    for(int i = 2; i < MAXN; i++)
+        inv[i] = inv[mod % i] * (mod - mod / i) % mod;
+    invfact[0] = invfact[1] = 1;
+    for(int i = 2; i < MAXN; i++)
+        invfact[i] = (invfact[i - 1] * inv[i]) % mod;
 }
 
 void cp()
 {
-    int n;
-    cin >> n;
-    for(int i = 0; i < n; i++)
-    {
-        int x;
-        cin >> x;
-        freq[x]++;
-    }
-
-    for(int i = 1; i <= 70; i++)
-        val[i] = get_mask(i);
-
-    clr(dp, -1);
-    int ans = solve(0, 0);
-    ans = (ans - 1 + mod) % mod;
-
-    cout << ans << endl;
+    int n, k, g;
+    cin >> n >> k >> g;
+    int grp_size = n / g;
+    ll total = fact[n];
+    total = (total * invfact[grp_size]) % mod;
+    total = (total * finv(g)) % mod;
+    total = (total * invfact[g]) % mod;
+    cout << total << endl;
 }
 
 int main()
@@ -92,6 +74,7 @@ int main()
     FASTIO;
     int t;
     t = 1;
+    init();
     // cin >> t;
     while(t--)
     {

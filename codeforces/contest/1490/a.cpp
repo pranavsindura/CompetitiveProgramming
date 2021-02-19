@@ -22,27 +22,24 @@ const double PI = acos(-1.0);
 const double eps = 1e-9;
 const ll mod = 1e9 + 7;
 const int inf = 1e7;
-const int MAXN = 2e5 + 5;
+const int MAXN = 1e5 + 5;
 
 void cp()
 {
     int n;
     cin >> n;
-    vector<array<int, 2>> arr(n);
-    for(auto &v : arr)
-        cin >> v[0] >> v[1];
-    sort(all(arr));
-    int ans = inf;
-    do
+    vector<int> arr(n);
+    for(int &x : arr)
+        cin >> x;
+    int need = 0;
+    int prev = arr[0];
+    for(int i = 1; i < n; i++)
     {
-        int me = n;
-        for(int i = 1; i < n; i++)
-            me += max(arr[i - 1][1], arr[i][0]);
-        me += max(arr[n - 1][1], arr[0][0]);
-        ans = min(ans, me);
+        int mn = min(prev, arr[i]), mx = max(prev, arr[i]);
+        while(mx > 2 * mn) need++, mn = mn * 2;
+        prev = arr[i];
     }
-    while(next_permutation(all(arr)));
-    cout << ans << endl;
+    cout << need << endl;
 }
 
 int main()
@@ -50,7 +47,7 @@ int main()
     FASTIO;
     int t;
     t = 1;
-    // cin >> t;
+    cin >> t;
     while(t--)
     {
         cp();
