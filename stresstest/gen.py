@@ -1,6 +1,10 @@
 from random import randint
 
-n = 4
-print(n)
-for i in range(n):
-	print(randint(1, 10), randint(1, 10))
+t = 10000
+print(t)
+for _ in range(t):
+	p = randint(1, 100)
+	a = randint(1, 100)
+	b = randint(1, 100)
+	c = randint(1, 100)
+	print(p,a,b,c)

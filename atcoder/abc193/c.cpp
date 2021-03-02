@@ -22,22 +22,27 @@ const double PI = acos(-1.0);
 const double eps = 1e-9;
 const ll mod = 1e9 + 7;
 const int inf = 1e7;
-const int MAXN = 1e5 + 5;
+const int MAXN = 1e5;
+
 
 void cp()
 {
-    ll p, a, b, c;
-    cin >> p >> a >> b >> c;
-    ll ans = LLONG_MAX;
-    ll mul = (p + a - 1) / a;
-    ll x = mul * a;
-    ans = min(ans, x - p);
-    mul = (p + b - 1) / b;
-    x = mul * b;
-    ans = min(ans, x - p);
-    mul = (p + c - 1) / c;
-    x = mul * c;
-    ans = min(ans, x - p);
+    ll n;
+    cin >> n;
+    ll ans = n;
+
+    vector<bool> done(sqrt(n) + 1, false);
+    for(int i = 2; i <= sqrt(n); i++)
+    {
+        if(done[i]) continue;
+        ll x = i * 1LL * i;
+        while(x <= n)
+        {
+            if(x <= sqrt(n)) done[x] = true;
+            ans--, x = x * i;
+        }
+    }
+
     cout << ans << endl;
 }
 
@@ -46,7 +51,7 @@ int main()
     FASTIO;
     int t;
     t = 1;
-    cin >> t;
+    // cin >> t;
     while(t--)
     {
         cp();

@@ -26,18 +26,22 @@ const int MAXN = 1e5 + 5;
 
 void cp()
 {
-    ll p, a, b, c;
-    cin >> p >> a >> b >> c;
-    ll ans = LLONG_MAX;
-    ll mul = (p + a - 1) / a;
-    ll x = mul * a;
-    ans = min(ans, x - p);
-    mul = (p + b - 1) / b;
-    x = mul * b;
-    ans = min(ans, x - p);
-    mul = (p + c - 1) / c;
-    x = mul * c;
-    ans = min(ans, x - p);
+    int n;
+    cin >> n;
+    vector<int> freq(MAXN);
+    for(int i = 0, x; i < n; i++)
+        cin >> x, freq[x]++;
+    vector<ll> res(MAXN);
+    res[MAXN - 1] = 0;
+    for(int i = MAXN - 2; i >= 0; i--)
+    {
+        res[i] += (freq[i] * (1 + res[i + 1])) % mod;
+        res[i] %= mod;
+    }
+
+    ll ans = 0;
+    for(int i = 0; i < MAXN; i++)
+        ans = (ans + res[i]) % mod;
     cout << ans << endl;
 }
 
@@ -46,7 +50,7 @@ int main()
     FASTIO;
     int t;
     t = 1;
-    cin >> t;
+    // cin >> t;
     while(t--)
     {
         cp();

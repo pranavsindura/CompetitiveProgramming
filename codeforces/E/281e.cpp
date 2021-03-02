@@ -24,20 +24,31 @@ const ll mod = 1e9 + 7;
 const int inf = 1e7;
 const int MAXN = 1e5 + 5;
 
+vector<vector<int>> adj;
+vector<int> depth;
+
+void dfs(int u, int par, int d)
+{
+    depth[u] = d;
+    for(int v : adj[u])
+        if(v != par)
+            dfs(v, u, d + 1);
+}
+
 void cp()
 {
-    ll p, a, b, c;
-    cin >> p >> a >> b >> c;
-    ll ans = LLONG_MAX;
-    ll mul = (p + a - 1) / a;
-    ll x = mul * a;
-    ans = min(ans, x - p);
-    mul = (p + b - 1) / b;
-    x = mul * b;
-    ans = min(ans, x - p);
-    mul = (p + c - 1) / c;
-    x = mul * c;
-    ans = min(ans, x - p);
+    int n;
+    cin >> n;
+    adj.resize(n + 1), depth.assign(n + 1, 0);
+    for(int i = 0, u, v; i < n - 1; i++)
+        cin >> u >> v, adj[u].push_back(v), adj[v].push_back(u);
+
+    dfs(1, 1, 1);
+
+    double ans = 0;
+    for(int i = 1; i <= n; i++) ans += 1.0 / double(depth[i]);
+
+    fix(20);
     cout << ans << endl;
 }
 
@@ -46,7 +57,7 @@ int main()
     FASTIO;
     int t;
     t = 1;
-    cin >> t;
+    // cin >> t;
     while(t--)
     {
         cp();

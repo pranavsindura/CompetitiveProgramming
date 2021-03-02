@@ -26,19 +26,28 @@ const int MAXN = 1e5 + 5;
 
 void cp()
 {
-    ll p, a, b, c;
-    cin >> p >> a >> b >> c;
-    ll ans = LLONG_MAX;
-    ll mul = (p + a - 1) / a;
-    ll x = mul * a;
-    ans = min(ans, x - p);
-    mul = (p + b - 1) / b;
-    x = mul * b;
-    ans = min(ans, x - p);
-    mul = (p + c - 1) / c;
-    x = mul * c;
-    ans = min(ans, x - p);
-    cout << ans << endl;
+    string s;
+    cin >> s;
+    bool ok = false;
+    for(int mask = 0; mask < 1 << 3; mask++)
+    {
+        string place;
+        place += ((mask >> 0) & 1) ? '(' : ')';
+        place += ((mask >> 1) & 1) ? '(' : ')';
+        place += ((mask >> 2) & 1) ? '(' : ')';
+
+        string t;
+        for(char x : s) t += place[x - 'A'];
+
+        bool can = true;
+        int db = 0;
+        for(char x : t)
+            if(x == '(') db++;
+            else db--, can &= db >= 0;
+        can &= db == 0;
+        ok |= can;
+    }
+    cout << (ok ? "YES\n" : "NO\n");
 }
 
 int main()

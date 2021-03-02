@@ -26,19 +26,26 @@ const int MAXN = 1e5 + 5;
 
 void cp()
 {
-    ll p, a, b, c;
-    cin >> p >> a >> b >> c;
-    ll ans = LLONG_MAX;
-    ll mul = (p + a - 1) / a;
-    ll x = mul * a;
-    ans = min(ans, x - p);
-    mul = (p + b - 1) / b;
-    x = mul * b;
-    ans = min(ans, x - p);
-    mul = (p + c - 1) / c;
-    x = mul * c;
-    ans = min(ans, x - p);
-    cout << ans << endl;
+    int n;
+    cin >> n;
+    vector<int> p(4);
+    for(int &x: p)
+    	cin >> x;
+
+    bool ok = false;
+    for(int mask = 0; mask < 1 << 4; mask++)
+    {
+        vector<int> q = p;
+        if((mask >> 0) & 1) q[0]--, q[3]--;
+        if((mask >> 1) & 1) q[2]--, q[3]--;
+        if((mask >> 2) & 1) q[2]--, q[1]--;
+        if((mask >> 3) & 1) q[0]--, q[1]--;
+        ok |= count_if(all(q), [&](int a)
+        {
+            return a >= 0 && a <= n - 2;
+        }) == 4;
+    }
+    cout << (ok ? "YES\n" : "NO\n");
 }
 
 int main()

@@ -26,19 +26,34 @@ const int MAXN = 1e5 + 5;
 
 void cp()
 {
-    ll p, a, b, c;
-    cin >> p >> a >> b >> c;
-    ll ans = LLONG_MAX;
-    ll mul = (p + a - 1) / a;
-    ll x = mul * a;
-    ans = min(ans, x - p);
-    mul = (p + b - 1) / b;
-    x = mul * b;
-    ans = min(ans, x - p);
-    mul = (p + c - 1) / c;
-    x = mul * c;
-    ans = min(ans, x - p);
-    cout << ans << endl;
+    ll n, x, y;
+    cin >> n >> x >> y;
+    ll p = -1;
+    while(n > 1)
+    {
+        if(x >= 1 && x <= n / 2 && y >= 1 && y <= n / 2)
+        {
+            p = n / 2;
+            break;
+        }
+        else if(x > n / 2 && x <= n && y >= 1 && y <= n / 2)
+        {
+            x -= n / 2;
+            n = n / 2;
+        }
+        else if(x >= 1 && x <= n / 2 && y > n / 2 && y <= n)
+        {
+            y -= n / 2;
+            n = n / 2;
+        }
+        else
+        {
+            p = -1;
+            break;
+        }
+    }
+
+    cout << p << endl;
 }
 
 int main()
@@ -53,3 +68,37 @@ int main()
     }
     return 0;
 }
+
+/*
+1x1
+0
+
+2x2
+10
+00
+
+4x4
+
+  1234
+1 2210
+2 2200
+3 1000
+4 0000
+
+8x8
+12345678
+44442210
+44442200
+44441000
+44440000
+22100000
+22000000
+10000000
+00000000
+
+4x4 N=4
+
+N=4  0
+
+
+*/

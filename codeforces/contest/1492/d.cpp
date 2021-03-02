@@ -26,19 +26,42 @@ const int MAXN = 1e5 + 5;
 
 void cp()
 {
-    ll p, a, b, c;
-    cin >> p >> a >> b >> c;
-    ll ans = LLONG_MAX;
-    ll mul = (p + a - 1) / a;
-    ll x = mul * a;
-    ans = min(ans, x - p);
-    mul = (p + b - 1) / b;
-    x = mul * b;
-    ans = min(ans, x - p);
-    mul = (p + c - 1) / c;
-    x = mul * c;
-    ans = min(ans, x - p);
-    cout << ans << endl;
+    int a, b, k;
+    cin >> a >> b >> k;
+    bool can = false;
+    string A, B;
+
+    if(b >= 2)
+    {
+        if(k <= a + b - 2)
+        {
+            can = true;
+            A = B = string(b, '1') + string(a, '0');
+            int T = k;
+            int mov = min(T, a);
+            int p = b - 1;
+            swap(B[p + mov], B[p]);
+            T -= mov;
+            p--;
+
+            while(T > 0)
+            {
+                swap(B[p], B[p + 1]);
+                p--;
+                T--;
+            }
+        }
+    }
+    else
+    {
+        if(k == 0)
+            A = B = "1" + string(a, '0'), can = true;
+    }
+
+    if(a == 0 && k > 0) can = false;
+
+    cout << (can ? "Yes\n" : "No\n");
+    if(can) cout << A << endl << B << endl;
 }
 
 int main()
@@ -46,7 +69,7 @@ int main()
     FASTIO;
     int t;
     t = 1;
-    cin >> t;
+    // cin >> t;
     while(t--)
     {
         cp();

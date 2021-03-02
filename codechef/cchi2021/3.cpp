@@ -26,18 +26,15 @@ const int MAXN = 1e5 + 5;
 
 void cp()
 {
-    ll p, a, b, c;
-    cin >> p >> a >> b >> c;
-    ll ans = LLONG_MAX;
-    ll mul = (p + a - 1) / a;
-    ll x = mul * a;
-    ans = min(ans, x - p);
-    mul = (p + b - 1) / b;
-    x = mul * b;
-    ans = min(ans, x - p);
-    mul = (p + c - 1) / c;
-    x = mul * c;
-    ans = min(ans, x - p);
+    int n, k;
+    cin >> n >> k;
+    vector<int> arr(n);
+    for(int &x : arr)
+        cin >> x;
+    sort(all(arr));
+    int ans = INT_MAX;
+    for(int i = k - 1; i < n; i++)
+        ans = min(ans, arr[i] - arr[i - k + 1]);
     cout << ans << endl;
 }
 

@@ -26,26 +26,31 @@ const int MAXN = 1e5 + 5;
 
 void cp()
 {
-    ll p, a, b, c;
-    cin >> p >> a >> b >> c;
-    ll ans = LLONG_MAX;
-    ll mul = (p + a - 1) / a;
-    ll x = mul * a;
-    ans = min(ans, x - p);
-    mul = (p + b - 1) / b;
-    x = mul * b;
-    ans = min(ans, x - p);
-    mul = (p + c - 1) / c;
-    x = mul * c;
-    ans = min(ans, x - p);
-    cout << ans << endl;
+    int n;
+    cin >> n;
+    vector<array<int, 3>> game(n);
+    for(int i = 0; i < n; i++)
+    {
+        int W = (n - 1) / 2 - game[i][0];
+        int j = i + 1;
+        for(; j < n && W-- > 0; j++)
+            cout << 1 << " ", game[j][1]++, game[i][0]++;
+
+        int D = (n - 1) % 2 ? 1 - game[i][2] : 0;
+        for(; j < n && D-- > 0; j++)
+            cout << 0 << " ", game[j][2]++, game[i][2]++;
+
+        int L = (n - 1) / 2 - game[i][1];
+        for(; j < n && L-- > 0; j++)
+            cout << -1 << " ", game[j][0]++, game[i][1]++;
+    }
+    cout << endl;
 }
 
 int main()
 {
     FASTIO;
     int t;
-    t = 1;
     cin >> t;
     while(t--)
     {

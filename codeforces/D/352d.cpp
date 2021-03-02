@@ -26,18 +26,21 @@ const int MAXN = 1e5 + 5;
 
 void cp()
 {
-    ll p, a, b, c;
-    cin >> p >> a >> b >> c;
-    ll ans = LLONG_MAX;
-    ll mul = (p + a - 1) / a;
-    ll x = mul * a;
-    ans = min(ans, x - p);
-    mul = (p + b - 1) / b;
-    x = mul * b;
-    ans = min(ans, x - p);
-    mul = (p + c - 1) / c;
-    x = mul * c;
-    ans = min(ans, x - p);
+    int n;
+    cin >> n;
+    vector<int> arr(n);
+    for(int &x : arr)
+        cin >> x;
+
+    int inv = 0;
+    for(int i = 0; i < n; i++)
+        for(int j = 0; j < i; j++)
+            inv += arr[j] > arr[i];
+
+    double ans = (inv / 2) * 4;
+    if(inv & 1) ans += 1;
+
+    fix(10);
     cout << ans << endl;
 }
 
@@ -46,7 +49,7 @@ int main()
     FASTIO;
     int t;
     t = 1;
-    cin >> t;
+    // cin >> t;
     while(t--)
     {
         cp();
