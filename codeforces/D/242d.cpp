@@ -28,38 +28,56 @@ void cp()
 {
     int n, m;
     cin >> n >> m;
-    vector<int> A(n);
-    for(int &x : A)
+    vector<vector<int>> adj(n);
+    for(int i = 0; i < m; i++)
+    {
+        int u, v;
+        cin >> u >> v;
+        u--, v--;
+        adj[u].pb(v);
+        adj[v].pb(u);
+    }
+    vector<int> make(n), have(n);
+    for(int &x : make)
         cin >> x;
 
-    int B = 0;
-    set<pi> st[2]; // B -> even, B ^ 1 -> odd
-    vector<int> dp(n, inf);
+    queue<int> st;
     for(int i = 0; i < n; i++)
+        if(make[i] == have[i])
+            st.push(i);
+
+    vector<int> press;
+    bool ok = true;
+    while(!st.empty())
     {
-        if(A[i]) B ^= 1, st[B ^ 1].insert({(i ? dp[i - 1] : 0), i});
-        else st[B].insert({(i ? dp[i - 1] : 0), i});
+        int x = st.front();
+        st.pop();
 
-        while(!st[B].empty() && st[B].begin()->ss < i - m + 1)
-            st[B].erase(st[B].begin());
-        while(!st[B ^ 1].empty() && st[B ^ 1].begin()->ss < i - m + 1)
-            st[B ^ 1].erase(st[B ^ 1].begin());
+        if(have[x] != make[x]) continue;
 
-        if(!st[B ^ 1].empty())
-            dp[i] = min(dp[i], 1 + st[B ^ 1].begin()->ff);
+        press.push_back(x);
+
+        have[x]++;
+        for(int v : adj[x])
+        {
+            have[v]++;
+            if(have[v] != make[v]) continue;
+            st.push(v);
+        }
     }
-
-    int ans = dp.back();
-    if(ans == inf) ans = -1;
-    cout << ans << endl;
+    cout << sz(press) << endl;
+    sort(all(press));
+    for(int x : press)
+        cout << x + 1 << " ";
+    cout << endl;
 }
 
 int main()
 {
-    FASTIO;
+    // FASTIO;
     int t;
     t = 1;
-    cin >> t;
+    // cin >> t;
     while(t--)
     {
         cp();

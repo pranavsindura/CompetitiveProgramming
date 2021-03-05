@@ -26,31 +26,52 @@ const int MAXN = 1e5 + 5;
 
 void cp()
 {
-    int n, m;
-    cin >> n >> m;
-    vector<int> A(n);
-    for(int &x : A)
+    int n;
+    cin >> n;
+    vector<ll> arr(n);
+    for(ll &x : arr)
         cin >> x;
 
-    int B = 0;
-    set<pi> st[2]; // B -> even, B ^ 1 -> odd
-    vector<int> dp(n, inf);
+    vector<ll> jumps(n);
+    ll ans = 0;
     for(int i = 0; i < n; i++)
     {
-        if(A[i]) B ^= 1, st[B ^ 1].insert({(i ? dp[i - 1] : 0), i});
-        else st[B].insert({(i ? dp[i - 1] : 0), i});
+        if(jumps[i] > 0)
+        {
+            ll e = min(n - 1LL, i + arr[i]);
+            ll rem = i + arr[i] - e;
+            rem = min(rem, jumps[i]);
+            jumps[i] -= rem;
+            arr[i] -= rem;
+            arr[i] = max(1LL, arr[i]);
+        }
 
-        while(!st[B].empty() && st[B].begin()->ss < i - m + 1)
-            st[B].erase(st[B].begin());
-        while(!st[B ^ 1].empty() && st[B ^ 1].begin()->ss < i - m + 1)
-            st[B ^ 1].erase(st[B ^ 1].begin());
+        while(jumps[i] > 0 && arr[i] > 1)
+        {
+            if(i + arr[i] < n) jumps[i + arr[i]]++;
+            arr[i]--;
+            jumps[i]--;
+        }
 
-        if(!st[B ^ 1].empty())
-            dp[i] = min(dp[i], 1 + st[B ^ 1].begin()->ff);
+        if(i + 1 < n) jumps[i + 1] += jumps[i];
+
+        if(i < n - 1)
+        {
+            ll take = max(0LL, arr[i] - (n - i - 1));
+            ans += take;
+            arr[i] -= take;
+            while(arr[i] > 1)
+            {
+                if(i + arr[i] < n)
+                    jumps[i + arr[i]]++;
+                arr[i]--;
+                ans++;
+            }
+        }
+        else
+            ans += arr[i] - 1;
     }
 
-    int ans = dp.back();
-    if(ans == inf) ans = -1;
     cout << ans << endl;
 }
 

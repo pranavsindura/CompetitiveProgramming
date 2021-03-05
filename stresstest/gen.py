@@ -1,10 +1,13 @@
 from random import randint
 
-t = 10000
+t = randint(1, 1000)
 print(t)
 for _ in range(t):
-	p = randint(1, 100)
-	a = randint(1, 100)
-	b = randint(1, 100)
-	c = randint(1, 100)
-	print(p,a,b,c)
+	n = randint(1, 100)
+	m = randint(1, n)
+	A = []
+	for i in range(n):
+		A.append(randint(0, 1))
+
+	print(n, m)
+	print(*A)

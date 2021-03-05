@@ -12,6 +12,10 @@ int find_set(int v)
     else
         return parent[v] = find_set(parent[v]);
 }
+bool is_connected(int a, int b)
+{
+    return find_set(a) == find_set(b);
+}
 bool union_set(int a, int b)
 {
     a = find_set(a), b = find_set(b);
@@ -37,6 +41,10 @@ int find_set(int v)
         return v;
     else
         return parent[v] = find_set(parent[v]);
+}
+bool is_connected(int a, int b)
+{
+    return find_set(a) == find_set(b);
 }
 bool union_set(int a, int b)
 {
