@@ -26,31 +26,34 @@ const int MAXN = 1e5 + 5;
 
 void cp()
 {
-    int n, m;
-    cin >> n >> m;
-    vector<int> A(n);
-    for(int &x : A)
+    int n;
+    cin >> n;
+    vector<int> arr(n);
+    for(int &x : arr)
         cin >> x;
 
-    int B = 0;
-    set<pi> st[2]; // B -> even, B ^ 1 -> odd
-    vector<int> dp(n, inf);
-    for(int i = 0; i < n; i++)
+    int ans = 0, dom = 0, single = 0;
+
+    for(int i = 0; i < n; )
     {
-        if(A[i]) B ^= 1, st[B ^ 1].insert({(i ? dp[i - 1] : 0), i});
-        else st[B].insert({(i ? dp[i - 1] : 0), i});
+        int j = i;
+        while(j + 1 < n && arr[j + 1] == arr[i]) j++;
 
-        while(!st[B].empty() && st[B].begin()->ss < i - m + 1)
-            st[B].erase(st[B].begin());
-        while(!st[B ^ 1].empty() && st[B ^ 1].begin()->ss < i - m + 1)
-            st[B ^ 1].erase(st[B ^ 1].begin());
-
-        if(!st[B ^ 1].empty())
-            dp[i] = min(dp[i], 1 + st[B ^ 1].begin()->ff);
+        if(i == j)
+        {
+            ans++;
+            if(arr[i] == dom) single = 0;
+            else single++;
+            if(single == 2) dom = 0;
+        }
+        else
+        {
+            if(arr[i] == dom) ans += 1, single = 0;
+            else ans += 2, dom = arr[i], single = 0;
+        }
+        i = j + 1;
     }
 
-    int ans = dp.back();
-    if(ans == inf) ans = -1;
     cout << ans << endl;
 }
 
@@ -59,7 +62,7 @@ int main()
     FASTIO;
     int t;
     t = 1;
-    cin >> t;
+    // cin >> t;
     while(t--)
     {
         cp();

@@ -24,31 +24,36 @@ const ll mod = 1e9 + 7;
 const int inf = 1e7;
 const int MAXN = 1e5 + 5;
 
-int n;
-int arr[505];
-int dp[505][505][505];
-int solve(int i, int a, int b)
-{
-    if(i == n) return 0;
-
-    int &ret = dp[i][a][b];
-    if(~ret) return ret;
-
-    int ans = 0;
-    // place a
-    ans = max(ans, (arr[i] != a) + solve(i + 1, arr[i], b));
-    // place b
-    ans = max(ans, (arr[i] != b) + solve(i + 1, a, arr[i]));
-    return ret = ans;
-}
-
 void cp()
 {
+    int n;
     cin >> n;
-    for(int i = 0; i < n; i++)
-        cin >> arr[i];
-    clr(dp, -1);
-    cout << solve(0, 0, 0) << endl;
+    vector<int> arr(n);
+    for(int &x : arr)
+        cin >> x;
+
+    int ans = 0, dom = 0, single = 0;
+
+    for(int i = 0; i < n; )
+    {
+        int j = i;
+        while(j + 1 < n && arr[j + 1] == arr[i]) j++;
+
+        if(i == j)
+        {
+            single++;
+            ans++;
+            if(single == 2) dom = 0;
+        }
+        else
+        {
+            if(arr[i] == dom) ans += 1, single = 0;
+            else ans += 2, dom = arr[i], single = 0;
+        }
+        i = j + 1;
+    }
+
+    cout << ans << endl;
 }
 
 int main()

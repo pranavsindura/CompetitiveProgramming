@@ -22,33 +22,53 @@ const double PI = acos(-1.0);
 const double eps = 1e-9;
 const ll mod = 1e9 + 7;
 const int inf = 1e7;
-const int MAXN = 1e5 + 5;
+const int MAXN = 1e6 + 5;
 
-int n;
-int arr[505];
-int dp[505][505][505];
-int solve(int i, int a, int b)
+int lp[MAXN];
+vector<int> prime;
+void sieve()
 {
-    if(i == n) return 0;
-
-    int &ret = dp[i][a][b];
-    if(~ret) return ret;
-
-    int ans = 0;
-    // place a
-    ans = max(ans, (arr[i] != a) + solve(i + 1, arr[i], b));
-    // place b
-    ans = max(ans, (arr[i] != b) + solve(i + 1, a, arr[i]));
-    return ret = ans;
+    lp[0] = lp[1] = 1;
+    for(int i = 2; i < MAXN; i++)
+    {
+        if(!lp[i]) lp[i] = i, prime.pb(i);
+        for(int j = 0; j < sz(prime) && i * 1LL * prime[j] < 1LL * MAXN; j++)
+        {
+            lp[i * prime[j]] = prime[j];
+            if(i % prime[j] == 0) break;
+        }
+    }
 }
+
+array<int, MAXN> lcm, v, arr;
 
 void cp()
 {
-    cin >> n;
+    int n, k;
+    cin >> n >> k;
     for(int i = 0; i < n; i++)
         cin >> arr[i];
-    clr(dp, -1);
-    cout << solve(0, 0, 0) << endl;
+
+    for(int i = 0; i < n; i++)
+    {
+        int x = arr[i];
+        while(x > 1)
+        {
+            int cnt = 0;
+            int f = lp[x];
+            while(x > 1 && lp[x] == f)
+                cnt++, x /= f;
+            lcm[f] = max(lcm[f], cnt);
+        }
+    }
+
+    while(k > 1) v[lp[k]]++, k /= lp[k];
+
+    bool ok = true;
+    for(int i = 2; i < MAXN && ok; i++)
+        ok &= v[i] <= lcm[i];
+
+    cout << (ok ? "Yes\n" : "No\n");
 }
 
 int main()
@@ -56,6 +76,7 @@ int main()
     FASTIO;
     int t;
     t = 1;
+    sieve();
     // cin >> t;
     while(t--)
     {

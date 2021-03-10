@@ -1,13 +1,16 @@
 from random import randint
 
-t = randint(1, 1000)
-print(t)
-for _ in range(t):
-	n = randint(1, 100)
-	m = randint(1, n)
-	A = []
-	for i in range(n):
-		A.append(randint(0, 1))
+n = randint(1, 500)
+A = []
+for i in range(n):
+	if A != []:
+		choice = randint(0, 1)
+		if choice == 0:
+			A.append(randint(1, 5))
+		else:
+			A.append(A[-1])
+	else:
+		A.append(randint(1, 5))
 
-	print(n, m)
-	print(*A)
+print(n)
+print(*A)
