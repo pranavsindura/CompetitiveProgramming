@@ -83,7 +83,6 @@ ld length(point a, point b)
 {
     return sqrtl((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));
 }
-
 const vector<int> dx = {0, 0, 1, -1};
 const vector<int> dy = {1, -1, 0, 0};
 
@@ -103,6 +102,7 @@ void cp()
         return val;
     };
 
+    // SIMULATED ANNEALING
     ld ans = LDBL_MAX;
     for(int t = 0; t < 10; t++)
     {
