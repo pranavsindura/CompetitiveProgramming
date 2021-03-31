@@ -1,79 +1,65 @@
-#include <cstdio>
-#include <cstring>
-#include <cmath>
-#include <cstdlib>
-#include <ctime>
-#include <algorithm>
- 
+#include <bits/stdc++.h>
+#define all(x)    x.begin(), x.end()
+#define allr(x)   x.rbegin(), x.rend()
+#define sz(x)     ((int)x.size())
+#define ln(x)     ((int)x.length())
+#define mp        make_pair
+#define pb        push_back
+#define ff        first
+#define ss        second
+#define endl      '\n'
+#define dbg(x)    cout << #x << ": " << x << endl;
+#define clr(x,v)  memset(x, v, sizeof(x));
+#define fix(x)    cout << setprecision(x) << fixed;
+#define FASTIO    ios_base::sync_with_stdio(false);cin.tie(NULL);cout.tie(NULL);
 using namespace std;
-const int maxn = 105;
-const int MOD = 1e4+1;
+
+mt19937_64 rng(chrono::steady_clock::now().time_since_epoch().count());
+#define rand(st, ed)  uniform_int_distribution<int>(st, ed)(rng)
+
+using ll = long long int;
+using ld = long double;
+using pi = pair<int, int>;
+
+const double PI = acos(-1.0);
 const double eps = 1e-9;
-const double INF = 0x3f3f3f3f3f3f3f3f;
-const int dir[8][2] = {{-1, -1}, {0, -1}, {1, -1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1} };
- 
-struct point {
-    double x, y;
-    point (double x = 0, double y = 0) {
-        this->x = x;
-        this->y = y;
-    }
-}p[maxn];
-int N;
- 
-double distance (point u) {
-    double ret = 0;
-    for (int i = 0; i < N; i++) {
-        double dx = u.x - p[i].x;
-        double dy = u.y - p[i].y;
-        ret += sqrt(dx * dx + dy * dy);
-    }
-    return ret;
+const ll mod = 1e9 + 7;
+const int inf = 1e7;
+const int MAXN = 1e5 + 5;
+
+void cp()
+{
+    int N, MAXH, M;
+    cin >> N >> MAXH >> M;
+    vector<int> L(M), R(M), A(M), B(M);
+    for(int &x : L) cin >> x, x--;
+    for(int &x : R) cin >> x, x--;
+    for(int &x : A) cin >> x;
+    for(int &x : B) cin >> x;
+
+    vector<int> MN(N, 1);
+    vector<int> MX(N, MAXH);
+
+    for(int i = 0; i < M; i++)
+        for(int j = L[i]; j <= R[i]; j++)
+            MN[j] = max(MN[j], A[i]), MX[j] = min(MX[j], B[i]);
+
+    ll ans = 1;
+    for(int i = 0; i < N; i++)
+        ans = (ans * max(0, MX[i] - MN[i] + 1)) % mod;
+
+    cout << ans << endl;
 }
- 
-double solve () {
-    int ti = 1;
-    double ret = INF, r = 0.9;
- 
-    srand(time(NULL));
- 
-    while (ti--) {
-        point u(rand() % MOD, rand() % MOD);
-        double step = 1e4;
-        double dis = distance(u);
- 
-        while (step > eps) {
-            point v = u;
- 
-            for (int i = 0; i < 8; i++) {
-                point tr(u.x + dir[i][0] * step, u.y + dir[i][1] * step);
-                double tmpd = distance(tr);
- 
-                if (tmpd < dis) {
-                    dis = tmpd;
-                    v = tr;
-                }
-            }
- 
-            u = v;
-            step *= r;
-            ret = min(ret, dis);
-        }
-    }
-    return ret;
-}
- 
-int main () {
-    int cas;
-    scanf("%d", &cas);
-    while (cas--) {
-        scanf("%d", &N);
-        for (int i = 0; i < N; i++)
-            scanf("%lf%lf", &p[i].x, &p[i].y);
-        printf("%.0lf\n", solve());
- 
-        if (cas)
-            printf("\n");
+
+int main()
+{
+    FASTIO;
+    int t;
+    t = 1;
+    cin >> t;
+    while(t--)
+    {
+        cp();
     }
     return 0;
 }

@@ -197,3 +197,28 @@ int first_above(int v, int tl, int tr, int k, int l) // Index (>=l) of first ele
         return first_above(v << 1 | 1, tm + 1, tr, k, l);
     }
 }
+
+// Maximise range with val
+// Split further, UVA 1232, ABC196E
+// Modify as required
+void rmax(int v, int tl, int tr, int l, int r, int val)
+{
+    if(tl > r || tr < l)
+        return;
+    if(tl != tr) push(v, tl, tr);
+    if(tmin[v] > val)
+        return;
+    if(l <= tl && tr <= r)
+    {
+        if(tmax[v] <= val)
+        {
+            tmax[v] = tmin[v] = lazy[v] = val;
+            return;
+        }
+    }
+    int tm = (tl + tr) >> 1;
+    rmax(v << 1, tl, tm, l, r, val);
+    rmax(v << 1 | 1, tm + 1, tr, l, r, val);
+    tmax[v] = max(tmax[v << 1], tmax[v << 1 | 1]);
+    tmin[v] = min(tmin[v << 1], tmin[v << 1 | 1]);
+}
