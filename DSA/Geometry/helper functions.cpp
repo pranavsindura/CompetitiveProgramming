@@ -48,7 +48,7 @@ point polar(double r, double ang)
     return point(r * cos(ang), r * sin(ang));
 }
 
-// Rotate vector P by a radians
+// Rotate vector P by a radians cw
 point rotate(point p, double a)
 {
     return point(p.x * cos(a) + p.y * sin(a), p.y * cos(a) - p.x * sin(a));

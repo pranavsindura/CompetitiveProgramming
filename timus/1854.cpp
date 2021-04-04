@@ -25,35 +25,29 @@ const double PI = acos(-1.0);
 const double eps = 1e-9;
 const ll mod = 1e9 + 7;
 const int inf = 1e7;
-const int MAXN = 1e5 + 5;
+const int MAXN = 1e6 + 5;
+
+bool is_square(ll x)
+{
+    return ll(sqrt(x)) * ll(sqrt(x)) == x;
+}
 
 void cp()
 {
-    int n;
-    cin >> n;
-    vector<int> arr(n + 1);
-    arr[0] = 0;
-    for(int i = 1; i <= n; i++)
-        cin >> arr[i];
-
-    vector<int> eat(n + 1);
-    eat[0] = inf;
-    stack<int> st;
-    st.push(0);
-
-    for(int i = 1; i <= n; i++)
+    ll N;
+    cin >> N;
+    ll ans = -1;
+    for(int s = 1; s < MAXN; s += 2)
     {
-        eat[i] = 1;
-        while(!st.empty() && arr[st.top()] < arr[i])
-        {
-            eat[i] = max(eat[i], eat[st.top()] + 1);
-            st.pop();
-        }
-        st.push(i);
+        if(N % s == 0 && is_square(N / s))
+            ans = max(ans, N / s);
     }
-
-    int ans = 0;
-    for(int i = 1; i <= n; i++) if(eat[i] < inf) ans = max(ans, eat[i]);
+    for(ll g = 1; g < MAXN; g++)
+    {
+        if(N % (g * g) == 0 && (N / (g * g)) % 2)
+            ans = max(ans, g * g);
+    }
+    assert(~ans);
     cout << ans << endl;
 }
 

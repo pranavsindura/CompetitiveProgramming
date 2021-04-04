@@ -23,7 +23,7 @@ const ll mod = 1e9 + 7;
 const int inf = 1e5;
 const int MAXN = 8e2 + 5;
 
-/*UNTESTED*/
+/*TESTED and PASSED*/
 
 map<int, int> flow[MAXN];
 
@@ -74,29 +74,48 @@ void cp()
     {
         for(int i = 1; i <= n; i++)
             flow[i].clear();
-        vector<pi> edges;
+        vector<vector<int>> edges;
         for(int i = 0; i < m; i++)
         {
             int u, v, w;
             cin >> u >> v >> w;
+            edges.pb({u, v, w});
+        }
+
+        vector<vector<int>> A, B;
+        for(auto e: edges)
+        {
+            int u = e[0], v = e[1], w = e[2];
             flow[u][v] = w;
             flow[v][u] = w;
-            edges.pb({u, v});
         }
         N = n;
-        int F = max_flow(S, T);
-        find_path(S, T);
-        int cnt = 0;
-        for(pi e : edges)
+        int FA = max_flow(S, T);
+        for(auto e : edges)
         {
-            bool min_cut = vis[e.ff] ^ vis[e.ss];
-            if(!min_cut && (!flow[e.ff][e.ss] || !flow[e.ss][e.ff]))
-                cnt++;
+            if(vis[e[0]] ^ vis[e[1]])
+                A.push_back(e);
         }
-        if(cnt)
-            cout << "AMBIGUOUS\n";
-        else
+
+        for(int i = 1; i <= n; i++)
+            flow[i].clear();
+        for(auto e: edges)
+        {
+            int u = e[0], v = e[1], w = e[2];
+            flow[u][v] = w;
+            flow[v][u] = w;
+        }
+        N = n;
+        int FB = max_flow(T, S);
+        for(auto e : edges)
+        {
+            if(vis[e[0]] ^ vis[e[1]])
+                B.push_back(e);
+        }
+        if(A == B && FA == FB)
             cout << "UNIQUE\n";
+        else
+            cout << "AMBIGUOUS\n";
     }
 }
 

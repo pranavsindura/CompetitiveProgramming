@@ -68,6 +68,29 @@
 	This is how we can generate any other equivalent solution
 
 
+	Representable numbers as
+	Ax + By (x > 0, y > 0)
+	in [left, right]
+
+	Obviously, any number not divisible by GCD(A, B) can not be represented as 
+	A * x + B * y
+	so we can divide A, B, left, and right by GCD(A, B) and get the same problem with 
+	A and B being relatively prime. 
+	(Notice that left should be rounded up and right should be rounded down after the division.)
+
+	Now, it can be proven that any number greater than or equal to 2 * A * B can be 
+	represented as A * x + B * d. 
+	Here is a hint for the proof: for every such number N,
+	N mod A = (B * d) mod A
+	N mod B = (A * x) mod B
+	and since A and B are relatively prime, we can find values for x and d such that 
+	1 ≤ d ≤ A and 1 ≤ x ≤ B that satisfy those two equations.
+	
+	To find out if the numbers less than 2 * A * B can be represented in the form
+	A * x + B * d, we can use the fact that for every such representation we can reduce 
+	x by B and correspondingly increase d by A to get the same sum. 
+	Thus, we only need to check values from 1 to B for x.
+
 
 
 	Modular Arithmetic

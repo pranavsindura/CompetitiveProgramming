@@ -29,32 +29,25 @@ const int MAXN = 1e5 + 5;
 
 void cp()
 {
-    int n;
-    cin >> n;
-    vector<int> arr(n + 1);
-    arr[0] = 0;
-    for(int i = 1; i <= n; i++)
-        cin >> arr[i];
-
-    vector<int> eat(n + 1);
-    eat[0] = inf;
-    stack<int> st;
-    st.push(0);
-
-    for(int i = 1; i <= n; i++)
+    int n, k;
+    cin >> n >> k;
+    map<int, int> cnt;
+    for(int i = 0; i < k + 1; i++)
     {
-        eat[i] = 1;
-        while(!st.empty() && arr[st.top()] < arr[i])
-        {
-            eat[i] = max(eat[i], eat[st.top()] + 1);
-            st.pop();
-        }
-        st.push(i);
+        cout << "? ";
+        for(int j = 0; j < k + 1; j++)
+            if(i != j)
+                cout << j + 1 << " ";
+        cout << endl;
+        cout.flush();
+        int pos, apos;
+        cin >> pos;
+        if(pos == -1) exit(0);
+        cin >> apos;
+        cnt[apos]++;
     }
-
-    int ans = 0;
-    for(int i = 1; i <= n; i++) if(eat[i] < inf) ans = max(ans, eat[i]);
-    cout << ans << endl;
+    cout << "! " << cnt.rbegin()->ss << endl;
+    cout.flush();
 }
 
 int main()

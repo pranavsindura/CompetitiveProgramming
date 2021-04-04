@@ -27,34 +27,33 @@ const ll mod = 1e9 + 7;
 const int inf = 1e7;
 const int MAXN = 1e5 + 5;
 
+bool is_palin(string s)
+{
+    for(int i = 0; i < ln(s) / 2; i++)
+        if(s[i] != s[ln(s) - i - 1])
+            return false;
+    return true;
+}
+
 void cp()
 {
-    int n;
-    cin >> n;
-    vector<int> arr(n + 1);
-    arr[0] = 0;
-    for(int i = 1; i <= n; i++)
-        cin >> arr[i];
-
-    vector<int> eat(n + 1);
-    eat[0] = inf;
-    stack<int> st;
-    st.push(0);
-
-    for(int i = 1; i <= n; i++)
+    string s;
+    cin >> s;
+    if(count(all(s), 'a') == ln(s))
+        cout << "NO\n";
+    else
     {
-        eat[i] = 1;
-        while(!st.empty() && arr[st.top()] < arr[i])
+        cout << "YES\n";
+        if(s.front() == s.back())
         {
-            eat[i] = max(eat[i], eat[st.top()] + 1);
-            st.pop();
+            if(!is_palin(s + "a"))
+                cout << s << "a" << endl;
+            else
+                cout << "a" << s << endl;
         }
-        st.push(i);
+        else if(s.front() == 'a') cout << "a" << s << endl;
+        else cout << s << "a" << endl;
     }
-
-    int ans = 0;
-    for(int i = 1; i <= n; i++) if(eat[i] < inf) ans = max(ans, eat[i]);
-    cout << ans << endl;
 }
 
 int main()
@@ -62,7 +61,7 @@ int main()
     FASTIO;
     int t;
     t = 1;
-    // cin >> t;
+    cin >> t;
     while(t--)
     {
         cp();

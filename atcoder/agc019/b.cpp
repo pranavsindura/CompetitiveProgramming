@@ -25,35 +25,21 @@ const double PI = acos(-1.0);
 const double eps = 1e-9;
 const ll mod = 1e9 + 7;
 const int inf = 1e7;
-const int MAXN = 1e5 + 5;
+const int MAXN = 2e5 + 5;
 
 void cp()
 {
-    int n;
-    cin >> n;
-    vector<int> arr(n + 1);
-    arr[0] = 0;
-    for(int i = 1; i <= n; i++)
-        cin >> arr[i];
-
-    vector<int> eat(n + 1);
-    eat[0] = inf;
-    stack<int> st;
-    st.push(0);
-
-    for(int i = 1; i <= n; i++)
+    string s;
+    cin >> s;
+    int n = ln(s);
+    ll ans = 0;
+    vector<int> freq(26);
+    for(int i = 0; i < n; i++)
     {
-        eat[i] = 1;
-        while(!st.empty() && arr[st.top()] < arr[i])
-        {
-            eat[i] = max(eat[i], eat[st.top()] + 1);
-            st.pop();
-        }
-        st.push(i);
+        ans += i - freq[s[i] - 'a'];
+        freq[s[i] - 'a']++;
     }
-
-    int ans = 0;
-    for(int i = 1; i <= n; i++) if(eat[i] < inf) ans = max(ans, eat[i]);
+    ans++;
     cout << ans << endl;
 }
 

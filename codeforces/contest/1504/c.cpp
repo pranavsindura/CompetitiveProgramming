@@ -30,31 +30,41 @@ const int MAXN = 1e5 + 5;
 void cp()
 {
     int n;
-    cin >> n;
-    vector<int> arr(n + 1);
-    arr[0] = 0;
-    for(int i = 1; i <= n; i++)
-        cin >> arr[i];
-
-    vector<int> eat(n + 1);
-    eat[0] = inf;
-    stack<int> st;
-    st.push(0);
-
-    for(int i = 1; i <= n; i++)
+    string s;
+    cin >> n >> s;
+    vector<int> cnt(2);
+    for(char x : s) cnt[x - '0']++;
+    if(s.front() == s.back() && s.front() == '1' && cnt[1] % 2 == 0 && cnt[0] % 2 == 0)
     {
-        eat[i] = 1;
-        while(!st.empty() && arr[st.top()] < arr[i])
+        string A, B;
+        A += '(', B += '(';
+        vector<int> last(2);
+        for(int i = 1; i < n - 1; i++)
         {
-            eat[i] = max(eat[i], eat[st.top()] + 1);
-            st.pop();
+            if(s[i] == '0')
+            {
+                last[0] ^= 1;
+                if(last[0] == 0)
+                    A += '(', B += ')';
+                else
+                    A += ')', B += '(';
+            }
+            else
+            {
+                last[1] ^= 1;
+                if(last[1] == 0)
+                    A += ')', B += ')';
+                else
+                    A += '(', B += '(';
+            }
         }
-        st.push(i);
+        A += ')', B += ')';
+        cout << "YES\n";
+        cout << A << endl;
+        cout << B << endl;
     }
-
-    int ans = 0;
-    for(int i = 1; i <= n; i++) if(eat[i] < inf) ans = max(ans, eat[i]);
-    cout << ans << endl;
+    else
+        cout << "NO\n";
 }
 
 int main()
@@ -62,7 +72,7 @@ int main()
     FASTIO;
     int t;
     t = 1;
-    // cin >> t;
+    cin >> t;
     while(t--)
     {
         cp();

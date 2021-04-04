@@ -30,31 +30,22 @@ const int MAXN = 1e5 + 5;
 void cp()
 {
     int n;
-    cin >> n;
-    vector<int> arr(n + 1);
-    arr[0] = 0;
-    for(int i = 1; i <= n; i++)
-        cin >> arr[i];
+    string a, b;
+    cin >> n >> a >> b;
+    vector<int> cnt(2);
+    for(char x : a)
+        cnt[x - '0']++;
 
-    vector<int> eat(n + 1);
-    eat[0] = inf;
-    stack<int> st;
-    st.push(0);
-
-    for(int i = 1; i <= n; i++)
+    bool ok = true;
+    int inv = 0;
+    for(int i = n - 1; i >= 0; i--)
     {
-        eat[i] = 1;
-        while(!st.empty() && arr[st.top()] < arr[i])
-        {
-            eat[i] = max(eat[i], eat[st.top()] + 1);
-            st.pop();
-        }
-        st.push(i);
+        if((a[i] - '0') ^ inv != (b[i] - '0'))
+            ok &= cnt[0] == cnt[1], inv ^= 1;
+        cnt[a[i] - '0']--;
     }
 
-    int ans = 0;
-    for(int i = 1; i <= n; i++) if(eat[i] < inf) ans = max(ans, eat[i]);
-    cout << ans << endl;
+    cout << (ok ? "YES\n" : "NO\n");
 }
 
 int main()
@@ -62,7 +53,7 @@ int main()
     FASTIO;
     int t;
     t = 1;
-    // cin >> t;
+    cin >> t;
     while(t--)
     {
         cp();

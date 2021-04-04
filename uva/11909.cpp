@@ -29,39 +29,26 @@ const int MAXN = 1e5 + 5;
 
 void cp()
 {
-    int n;
-    cin >> n;
-    vector<int> arr(n + 1);
-    arr[0] = 0;
-    for(int i = 1; i <= n; i++)
-        cin >> arr[i];
-
-    vector<int> eat(n + 1);
-    eat[0] = inf;
-    stack<int> st;
-    st.push(0);
-
-    for(int i = 1; i <= n; i++)
+    ld l, w, h, deg;
+    while(cin >> l >> w >> h >> deg)
     {
-        eat[i] = 1;
-        while(!st.empty() && arr[st.top()] < arr[i])
-        {
-            eat[i] = max(eat[i], eat[st.top()] + 1);
-            st.pop();
-        }
-        st.push(i);
+        ld mx = atan(h / l);
+        ld rad = deg * PI / 180;
+        ld V = 0;
+        if(rad > mx)
+            V = 0.5 * h * h * tan(PI / 2 - rad) * w;
+        else
+            V = (l * h - 0.5 * l * l * tan(rad)) * w;
+        fix(3);
+        cout << V << " mL" << endl;
     }
-
-    int ans = 0;
-    for(int i = 1; i <= n; i++) if(eat[i] < inf) ans = max(ans, eat[i]);
-    cout << ans << endl;
 }
 
 int main()
 {
     FASTIO;
     int t;
-    t = 1;
+    t = 1; 
     // cin >> t;
     while(t--)
     {
