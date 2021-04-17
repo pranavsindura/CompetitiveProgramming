@@ -140,6 +140,11 @@ int find_path(int S, int T)
         for(int v = 0; v < N; v++)
             if(!vis[v] && flow[u][v] > 0)
                 vis[v] = 1, path[v] = u, q.push({v, min(mx, flow[u][v])});
+        /*
+        for(auto v : flow[u])
+        if(!vis[v.ff] && v.ss > 0)
+            vis[v.ff] = 1, path[v.ff] = u, q.push({v.ff, min(mx, v.ss)});
+        */
     }
     return 0;
 }

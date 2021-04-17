@@ -2,10 +2,8 @@
 
 ll gcd(ll a, ll b)
 {
-    if(b == 0)
-        return a;
-    else
-        return gcd(b, a % b);
+    if(b == 0) return a;
+    else return gcd(b, a % b);
 }
 
 // EXTENDED GCD
@@ -14,8 +12,7 @@ ll gcd(ll a, ll b, ll &x, ll &y)
 {
     if (b == 0)
     {
-        x = 1;
-        y = 0;
+        x = 1, y = 0;
         return a;
     }
     ll x1, y1;

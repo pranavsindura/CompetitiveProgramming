@@ -19,42 +19,54 @@ mt19937_64 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 using ll = long long int;
 using ld = long double;
-using pi = pair<int, int>;
+using pi = pair<int, ll>;
 
 const double PI = acos(-1.0);
 const double eps = 1e-9;
 const ll mod = 1e9 + 7;
 const int inf = 1e7;
-const int MAXN = 1e5 + 5;
+const int MAXN = 5e4 + 5;
+
+int n;
+ll total;
+vector<pi> arr;
+map<ll, ll> dp;
+ll solve(int i, ll pro)
+{
+    if(pro > total) return 0;
+    assert(pro > 0);
+    if(dp.count(pro))
+        return dp[pro];
+    if(i == n)
+    {
+        int me = 0;
+        ll temp = pro;
+        for(int j = 0; j < n; j++)
+            while(temp % arr[j].ff == 0)
+                me += arr[j].ff, temp /= arr[j].ff;
+        return total - me == pro ? pro : 0;
+    }
+
+    ll ans = 0;
+    ll p = 0;
+    ll B = 1;
+    while(pro <= (total + B - 1) / B && p <= arr[i].ss)
+    {
+        ans = max(ans, solve(i + 1, pro * B));
+        p++, B *= arr[i].ff;
+    }
+    return dp[pro] = ans;
+}
 
 void cp()
 {
-    int n;
+    total = 0;
     cin >> n;
-    vector<int> arr(n + 1);
-    arr[0] = 0;
-    for(int i = 1; i <= n; i++)
-        cin >> arr[i];
-
-    vector<int> eat(n + 1);
-    eat[0] = inf;
-    stack<int> st;
-    st.push(0);
-
-    for(int i = 1; i <= n; i++)
-    {
-        eat[i] = 1;
-        while(!st.empty() && arr[st.top()] < arr[i])
-        {
-            eat[i] = max(eat[i], eat[st.top()] + 1);
-            st.pop();
-        }
-        st.push(i);
-    }
-
-    int ans = 0;
-    for(int i = 1; i <= n; i++) if(eat[i] < inf) ans = max(ans, eat[i]);
-    cout << ans << endl;
+    arr.resize(n);
+    for(auto &x : arr)
+        cin >> x.ff >> x.ss, total += x.ff * x.ss;
+    dp.clear();
+    cout << solve(0, 1) << endl;
 }
 
 int main()
@@ -62,9 +74,10 @@ int main()
     FASTIO;
     int t;
     t = 1;
-    // cin >> t;
-    while(t--)
+    cin >> t;
+    for(int i = 1; i <= t; i++)
     {
+        cout << "Case #" << i << ": ";
         cp();
     }
     return 0;
