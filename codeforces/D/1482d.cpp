@@ -29,14 +29,46 @@ const int MAXN = 1e5 + 5;
 
 void cp()
 {
-    ll n;
+    int n;
     cin >> n;
-    string B;
-    bool ok = n % 2;
-    while(n) B += char(48 + (n % 2)), n >>= 1;
-    for(int i = 2; i < ln(B); i += 2)
-        ok &= B[i] == '0';
-    cout << (ok ? "Ivica\n" : "Marica\n");
+    vector<int> arr(n);
+    for(int &x : arr)
+        cin >> x;
+
+    vector<int> L(n), R(n);
+    for(int i = 0; i < n; i++)
+        L[i] = (i - 1 + n) % n, R[i] = (i + 1) % n;
+
+    vector<int> exist(n, 1);
+
+    queue<pi> q;
+    for(int i = 1; i <= n; i++)
+    {
+        if(__gcd(arr[i % n], arr[i - 1]) == 1)
+            q.push({i, i - 1}), i++;
+    }
+
+    vector<int> order;
+    while(!q.empty())
+    {
+        pi u = q.front();
+        q.pop();
+        int p = u.ff, who = u.ss;
+        if(!exist[who]) continue;
+        int idx = p % n, times = p / n;
+        order.push_back(idx);
+        exist[idx] = 0;
+        R[who] = R[idx];
+        L[R[idx]] = who;
+
+        if(__gcd(arr[who], arr[R[who]]) == 1)
+            q.push({R[who], who});
+    }
+
+    cout << sz(order) << " ";
+    for(int x : order)
+        cout << x + 1 << " ";
+    cout << endl;
 }
 
 int main()

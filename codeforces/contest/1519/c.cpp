@@ -29,14 +29,48 @@ const int MAXN = 1e5 + 5;
 
 void cp()
 {
-    ll n;
+    int n;
     cin >> n;
-    string B;
-    bool ok = n % 2;
-    while(n) B += char(48 + (n % 2)), n >>= 1;
-    for(int i = 2; i < ln(B); i += 2)
-        ok &= B[i] == '0';
-    cout << (ok ? "Ivica\n" : "Marica\n");
+    vector<int> U(n);
+    for(int &x : U)
+        cin >> x, x--;
+    vector<ll> S(n);
+    for(ll &x : S)
+        cin >> x;
+    vector<vector<ll>> have(n);
+    for(int i = 0; i < n; i++)
+        have[U[i]].push_back(S[i]);
+    for(int i = 0; i < n; i++)
+        sort(allr(have[i]));
+
+    vector<ll> ans(n + 5);
+    for(int i = 0; i < n; i++)
+    {
+        int k = sz(have[i]);
+        if(k == 0) continue;
+        for(int j = k - 2; j >= 0; j--)
+            have[i][j] += have[i][j + 1];
+        for(int g = 1; g <= k; g++)
+        {
+            int rem = k % g;
+            if(rem > 0)
+            {
+                ans[g] -= have[i][k - rem];
+                ans[g + 1] += have[i][k - rem];
+            }
+        }
+        ans[k + 1] -= have[i].front();
+    }
+
+    ll total = accumulate(all(S), 0LL);
+    for(int i = 1; i < n + 5; i++)
+        ans[i] += ans[i - 1];
+    for(int i = 0; i < n + 5; i++)
+        ans[i] += total;
+    
+    for(int i = 1; i <= n; i++)
+        cout << ans[i] << " ";
+    cout << endl;
 }
 
 int main()

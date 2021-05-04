@@ -29,14 +29,34 @@ const int MAXN = 1e5 + 5;
 
 void cp()
 {
-    ll n;
-    cin >> n;
-    string B;
-    bool ok = n % 2;
-    while(n) B += char(48 + (n % 2)), n >>= 1;
-    for(int i = 2; i < ln(B); i += 2)
-        ok &= B[i] == '0';
-    cout << (ok ? "Ivica\n" : "Marica\n");
+    int n;
+    ll C;
+    cin >> n >> C;
+    vector<ll> a(n), b(n - 1);
+    for(ll &x : a)
+        cin >> x;
+    for(ll &x : b)
+        cin >> x;
+    
+    vector<ll> days(n), money(n);
+    for(int i = 1; i < n; i++)
+    {
+        // earn enough so that money[i - 1] >= b[i - 1]
+        ll diff = max(0LL, b[i - 1] - money[i - 1]);
+        ll d = (diff + a[i - 1] - 1) / a[i - 1];
+        money[i] = money[i - 1] + d * a[i - 1] - b[i - 1];
+        days[i] = days[i - 1] + d + 1;
+    }
+
+    ll ans = LLONG_MAX;
+    for(int i = 0; i < n; i++)
+    {
+        ll diff = max(0LL, C - money[i]);
+        ll d = (diff + a[i] - 1) / a[i];
+        ans = min(ans, days[i] + d);
+    }
+
+    cout << ans << endl;
 }
 
 int main()

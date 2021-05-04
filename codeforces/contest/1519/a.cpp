@@ -29,14 +29,13 @@ const int MAXN = 1e5 + 5;
 
 void cp()
 {
-    ll n;
-    cin >> n;
-    string B;
-    bool ok = n % 2;
-    while(n) B += char(48 + (n % 2)), n >>= 1;
-    for(int i = 2; i < ln(B); i += 2)
-        ok &= B[i] == '0';
-    cout << (ok ? "Ivica\n" : "Marica\n");
+    int r, b, d;
+    cin >> r >> b >> d;
+    if(r > b) swap(r, b);
+    int diff = b - r;
+    int need = (diff + r - 1) / r;
+    if(need > d) cout << "NO\n";
+    else cout << "YES\n";
 }
 
 int main()

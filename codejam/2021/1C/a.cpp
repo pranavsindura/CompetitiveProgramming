@@ -29,14 +29,34 @@ const int MAXN = 1e5 + 5;
 
 void cp()
 {
-    ll n;
-    cin >> n;
-    string B;
-    bool ok = n % 2;
-    while(n) B += char(48 + (n % 2)), n >>= 1;
-    for(int i = 2; i < ln(B); i += 2)
-        ok &= B[i] == '0';
-    cout << (ok ? "Ivica\n" : "Marica\n");
+    int n, k;
+    cin >> n >> k;
+    vector<int> arr(n);
+    for(int &x : arr)
+        cin >> x;
+
+    sort(all(arr));
+    vector<int> can;
+
+    int A = 0;
+    for(int i = 1; i < n; i++)
+    {
+        int L = arr[i - 1], R = arr[i];
+        if(L == R) continue;
+        int d = R - L - 1;
+        A = max(A, d);
+        can.push_back((d + 1) / 2);
+    }
+    can.push_back(arr.front() - 1);
+    can.push_back(k - arr.back());
+    sort(allr(can));
+
+    int B = can[0] + can[1];
+
+    double p = max(A, B);
+    p /= k;
+    fix(10);
+    cout << p << endl;
 }
 
 int main()
@@ -45,8 +65,9 @@ int main()
     int t;
     t = 1;
     cin >> t;
-    while(t--)
+    for(int i = 1; i <= t; i++)
     {
+        cout << "Case #" << i << ": ";
         cp();
     }
     return 0;

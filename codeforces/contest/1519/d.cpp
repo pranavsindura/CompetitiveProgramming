@@ -25,30 +25,48 @@ const double PI = acos(-1.0);
 const double eps = 1e-9;
 const ll mod = 1e9 + 7;
 const int inf = 1e7;
-const int MAXN = 1e5 + 5;
+const int MAXN = 5e3 + 5;
 
-int dp[6005][2];
-int solve(int i, int p, int n)
-{
-    if(i == n) return p;
-    int &ret = dp[i][p];
-    if(~ret) return ret;
-    bool can = false;
-    if(2 * i <= n)
-        can |= solve(2 * i, p ^ 1, n) == p;
-    if(i + 1 <= n)
-        can |= solve(i + 1, p ^ 1, n) == p;
-    return ret = (can ? p : p ^ 1);
-}
+ll dp[MAXN][MAXN];
 
 void cp()
 {
     int n;
     cin >> n;
-    clr(dp, -1);
-    int who = solve(1, 0, n);
-    if(who == 0) cout << "Ivica" << endl;
-    else cout << "Marica" << endl;
+    vector<ll> A(n), B(n);
+    for(ll &x : A)
+        cin >> x;
+    for(ll &x : B)
+        cin >> x;
+
+    vector<ll> pref(n), suff(n);
+    pref[0] = A[0] * B[0];
+    for(int i = 1; i < n; i++)
+        pref[i] = pref[i - 1] + A[i] * B[i];
+    suff[n - 1] = A[n - 1] * B[n - 1];
+    for(int i = n - 2; i >= 0; i--)
+        suff[i] = suff[i + 1] + A[i] * B[i];
+
+    for(int i = 0; i < n; i++)
+        dp[i][i] = A[i] * B[i];
+
+    for(int i = 0; i < n - 1; i++)
+        dp[i][i + 1] = A[i] * B[i + 1] + A[i + 1] * B[i];
+
+    for(int i = n - 1; i >= 0; i--)
+        for(int j = i + 2; j < n; j++)
+            dp[i][j] = dp[i + 1][j - 1] + A[i] * B[j] + A[j] * B[i];
+
+    ll best = 0;
+    for(int i = 0; i < n; i++)
+        for(int j = i; j < n; j++)
+        {
+            ll me = dp[i][j];
+            me += i ? pref[i - 1] : 0;
+            me += j + 1 < n ? suff[j + 1] : 0;
+            best = max(best, me);
+        }
+    cout << best << endl;
 }
 
 int main()
@@ -56,7 +74,7 @@ int main()
     FASTIO;
     int t;
     t = 1;
-    cin >> t;
+    // cin >> t;
     while(t--)
     {
         cp();

@@ -19,7 +19,7 @@ mt19937_64 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 using ll = long long int;
 using ld = long double;
-using pi = pair<int, int>;
+using pi = pair<ll, ll>;
 
 const double PI = acos(-1.0);
 const double eps = 1e-9;
@@ -29,14 +29,24 @@ const int MAXN = 1e5 + 5;
 
 void cp()
 {
-    ll n;
+    int n;
     cin >> n;
-    string B;
-    bool ok = n % 2;
-    while(n) B += char(48 + (n % 2)), n >>= 1;
-    for(int i = 2; i < ln(B); i += 2)
-        ok &= B[i] == '0';
-    cout << (ok ? "Ivica\n" : "Marica\n");
+    map<pi, int> p;
+    vector<ll> S = {0, 0};
+    for(int i = 0; i < n; i++)
+    {
+        int x, y;
+        cin >> x >> y;
+        S[0] += x, S[1] += y;
+        p[ {x, y}] = 1;
+    }
+    bool ok = true;
+    S[0] *= 2, S[1] *= 2;
+    ok &= S[0] % n == 0 && S[1] % n == 0;
+    S[0] /= n, S[1] /= n;
+    for(auto c : p)
+        ok &= p.count({S[0] - c.ff.ff, S[1] - c.ff.ss});
+    cout << (ok ? "yes\n" : "no\n");
 }
 
 int main()

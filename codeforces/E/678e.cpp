@@ -27,16 +27,40 @@ const ll mod = 1e9 + 7;
 const int inf = 1e7;
 const int MAXN = 1e5 + 5;
 
+int n;
+double p[18][18];
+
+double dp[18][1 << 18];
+double solve(int A, int mask)
+{
+    if(__builtin_popcount(mask) == 1)
+        return A == 0;
+
+    double &ret = dp[A][mask];
+    if(fabs(ret + 1) > eps) return ret;
+
+    double ans = 0;
+    for(int C = 0; C < n; C++)
+        if(A != C && ((mask >> C) & 1))
+            ans = max(ans, p[A][C] * solve(A, mask ^ (1 << C)) +
+                      p[C][A] * solve(C, mask ^ (1 << A)));
+    return ret = ans;
+}
+
 void cp()
 {
-    ll n;
     cin >> n;
-    string B;
-    bool ok = n % 2;
-    while(n) B += char(48 + (n % 2)), n >>= 1;
-    for(int i = 2; i < ln(B); i += 2)
-        ok &= B[i] == '0';
-    cout << (ok ? "Ivica\n" : "Marica\n");
+    for(int i = 0; i < n; i++)
+        for(int j = 0; j < n; j++)
+            cin >> p[i][j];
+
+    clr(dp, -1);
+    double ans = 0;
+    for(int i = 0; i < n; i++)
+        ans = max(ans, solve(i, (1 << n) - 1));
+
+    fix(10);
+    cout << ans << endl;
 }
 
 int main()
@@ -44,7 +68,7 @@ int main()
     FASTIO;
     int t;
     t = 1;
-    cin >> t;
+    // cin >> t;
     while(t--)
     {
         cp();

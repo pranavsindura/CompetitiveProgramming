@@ -42,7 +42,7 @@ ll fpow(ll x, ll y, ll m)
 
 // Modular Multiplicative Inverse, Mod is prime
 // Fermat's Little Theorem
-ll inv(ll a)
+ll finv(ll a)
 {
     return fpow(a, mod - 2);
 }

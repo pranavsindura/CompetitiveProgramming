@@ -27,28 +27,50 @@ const ll mod = 1e9 + 7;
 const int inf = 1e7;
 const int MAXN = 1e5 + 5;
 
-int dp[6005][2];
-int solve(int i, int p, int n)
+int ans[MAXN], best[MAXN], depth[MAXN];
+vector<int> val[105];
+int G[105][105];
+
+void dfs(int u, int p, int d, vector<int> &A, vector<vector<int>> &adj)
 {
-    if(i == n) return p;
-    int &ret = dp[i][p];
-    if(~ret) return ret;
-    bool can = false;
-    if(2 * i <= n)
-        can |= solve(2 * i, p ^ 1, n) == p;
-    if(i + 1 <= n)
-        can |= solve(i + 1, p ^ 1, n) == p;
-    return ret = (can ? p : p ^ 1);
+    int me = -2, best = -1;
+    for(int i = 1; i <= 100; i++)
+        if(G[i][A[u]] == 1 && !val[i].empty())
+        {
+            if(depth[val[i].back()] > best)
+                best = depth[val[i].back()], me = val[i].back();
+        }
+    ans[u] = me;
+    depth[u] = d;
+    val[A[u]].push_back(u);
+    for(int v : adj[u])
+        if(v != p)
+            dfs(v, u, d + 1, A, adj);
+    val[A[u]].pop_back();
 }
 
 void cp()
 {
     int n;
     cin >> n;
-    clr(dp, -1);
-    int who = solve(1, 0, n);
-    if(who == 0) cout << "Ivica" << endl;
-    else cout << "Marica" << endl;
+    vector<int> A(n);
+    for(int &x : A)
+        cin >> x;
+    vector<vector<int>> adj(n);
+    for(int i = 0; i < n - 1; i++)
+    {
+        int u, v;
+        cin >> u >> v;
+        u--, v--;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+
+    dfs(0, -1, 0, A, adj);
+
+    for(int i = 0; i < n; i++)
+        cout << ans[i] + 1 << " ";
+    cout << endl;
 }
 
 int main()
@@ -56,6 +78,9 @@ int main()
     FASTIO;
     int t;
     t = 1;
+    for(int i = 1; i <= 100; i++)
+        for(int j = 1; j <= 100; j++)
+            G[i][j] = __gcd(i, j);
     cin >> t;
     while(t--)
     {

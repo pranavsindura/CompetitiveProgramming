@@ -27,16 +27,25 @@ const ll mod = 1e9 + 7;
 const int inf = 1e7;
 const int MAXN = 1e5 + 5;
 
+ll nck(int n, int k)
+{
+    int a = k, b = n - k;
+    if(a < b) swap(a, b);
+    ll ans = 1;
+    for(int i = n; i > a; i--) ans *= i;
+    for(int i = b; i > 0; i--) ans /= i;
+    return ans;
+}
+
 void cp()
 {
-    ll n;
-    cin >> n;
-    string B;
-    bool ok = n % 2;
-    while(n) B += char(48 + (n % 2)), n >>= 1;
-    for(int i = 2; i < ln(B); i += 2)
-        ok &= B[i] == '0';
-    cout << (ok ? "Ivica\n" : "Marica\n");
+    int n, k;
+    cin >> n >> k;
+    vector<int> de = {1, 0, 1, 2, 9};
+    ll ans = 0;
+    for(int i = 0; i <= k; i++)
+        ans += nck(n, i) * de[i];
+    cout << ans << endl;
 }
 
 int main()
@@ -44,7 +53,7 @@ int main()
     FASTIO;
     int t;
     t = 1;
-    cin >> t;
+    // cin >> t;
     while(t--)
     {
         cp();

@@ -29,14 +29,19 @@ const int MAXN = 1e5 + 5;
 
 void cp()
 {
-    ll n;
+    int n;
     cin >> n;
-    string B;
-    bool ok = n % 2;
-    while(n) B += char(48 + (n % 2)), n >>= 1;
-    for(int i = 2; i < ln(B); i += 2)
-        ok &= B[i] == '0';
-    cout << (ok ? "Ivica\n" : "Marica\n");
+    vector<int> arr(n);
+    for(int &x : arr)
+        cin >> x;
+    int mn = *min_element(all(arr));
+    for(int &x : arr)
+        x -= mn, x++;
+    int one = count(all(arr), 1);
+    if(one > n / 2)
+        cout << "Bob\n";
+    else
+        cout << "Alice\n";
 }
 
 int main()
@@ -44,7 +49,7 @@ int main()
     FASTIO;
     int t;
     t = 1;
-    cin >> t;
+    // cin >> t;
     while(t--)
     {
         cp();

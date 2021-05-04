@@ -27,16 +27,28 @@ const ll mod = 1e9 + 7;
 const int inf = 1e7;
 const int MAXN = 1e5 + 5;
 
+int dp[1005][2];
+int solve(int i, int p, int n)
+{
+    if(i == n) return p;
+    int &ret = dp[i][p];
+    if(~ret) return ret;
+    bool can = false;
+    if(2 * i <= n)
+        can |= solve(2 * i, p ^ 1, n) == p;
+    if(i + 1 <= n)
+        can |= solve(i + 1, p ^ 1, n) == p;
+    return ret = (can ? p : p ^ 1);
+}
+
 void cp()
 {
-    ll n;
+    int n;
     cin >> n;
-    string B;
-    bool ok = n % 2;
-    while(n) B += char(48 + (n % 2)), n >>= 1;
-    for(int i = 2; i < ln(B); i += 2)
-        ok &= B[i] == '0';
-    cout << (ok ? "Ivica\n" : "Marica\n");
+    clr(dp, -1);
+    int who = solve(1, 0, n);
+    if(who == 0) cout << "Ivica" << endl;
+    else cout << "Marica" << endl;
 }
 
 int main()
