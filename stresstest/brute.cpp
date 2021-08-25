@@ -25,30 +25,69 @@ const double PI = acos(-1.0);
 const double eps = 1e-9;
 const ll mod = 1e9 + 7;
 const int inf = 1e7;
-const int MAXN = 1e5 + 5;
+const int MAXN = 1e3 + 5;
 
-int dp[6005][2];
-int solve(int i, int p, int n)
+int is_hill(int a, int b, int c)
 {
-    if(i == n) return p;
-    int &ret = dp[i][p];
-    if(~ret) return ret;
-    bool can = false;
-    if(2 * i <= n)
-        can |= solve(2 * i, p ^ 1, n) == p;
-    if(i + 1 <= n)
-        can |= solve(i + 1, p ^ 1, n) == p;
-    return ret = (can ? p : p ^ 1);
+    return a < b && b > c;
+}
+
+int is_valley(int a, int b, int c)
+{
+    return a > b && b < c;
+}
+
+int count_hill_valley(vector<int> &A, vector<int> &order)
+{
+    int N = sz(A);
+    int ans = 0;
+    for(int i = 1; i < N - 1; i++)
+        ans += is_hill(A[order[i - 1]], A[order[i]], A[order[i + 1]]) + is_valley(A[order[i - 1]], A[order[i]], A[order[i + 1]]);
+    return ans;
 }
 
 void cp()
 {
-    int n;
-    cin >> n;
-    clr(dp, -1);
-    int who = solve(1, 0, n);
-    if(who == 0) cout << "Ivica" << endl;
-    else cout << "Marica" << endl;
+    int N, Q;
+    cin >> N;
+    vector<int> A(N);
+    for(int &x : A)
+        cin >> x;
+    cin >> Q;
+    vector<int> Type(Q), U(Q), V(Q);
+    for(int &x : Type)
+        cin >> x;
+    for(int &x : U)
+        cin >> x;
+    for(int &x : V)
+        cin >> x;
+
+    vector<int> order(N);
+    iota(all(order), 0);
+
+    // cout << count_hill_valley(A, order) << " ";
+    for(int i = 0; i < Q; i++)
+    {
+        if(Type[i] == 1)
+        {
+            U[i]--;
+            A[U[i]] = V[i];
+        }
+        else
+        {
+            U[i]--, V[i]--;
+            int p = find(all(order), U[i]) - begin(order);
+            for(int j = p; j < N - 1; j++)
+                order[j] = order[j + 1];
+            order[N - 1] = inf;
+            int q = find(all(order), V[i]) - begin(order);
+            for(int j = N - 1; j > q; j--)
+                order[j] = order[j - 1];
+            order[q + 1] = U[i];
+        }
+        cout << count_hill_valley(A, order) << " ";
+    }
+    cout << endl;
 }
 
 int main()

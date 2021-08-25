@@ -7,11 +7,11 @@ cube/
 CodingChallenge2020/
 codeshows/
 
-/in
-/out
-/out1
-/out2
-/test.exe
-/brute.exe
-/sol.exe
-/genetic_algorithm.cpp
+in
+out
+out1
+out2
+test
+brute.exe
+sol.exe
+genetic_algorithm.cpp

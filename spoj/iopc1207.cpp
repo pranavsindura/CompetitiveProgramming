@@ -14,6 +14,9 @@
 #define FASTIO    ios_base::sync_with_stdio(false);cin.tie(NULL);cout.tie(NULL);
 using namespace std;
 
+mt19937_64 rng(chrono::steady_clock::now().time_since_epoch().count());
+#define rand(st, ed)  uniform_int_distribution<int>(st, ed)(rng)
+
 using ll = long long int;
 using ld = long double;
 using pi = pair<int, int>;
@@ -24,106 +27,123 @@ const ll mod = 1e9 + 7;
 const int inf = 1e7;
 const int MAXN = 1e5 + 5;
 
-using ftype = int;
+using ftype = array<int, 2>;
 
-ftype t[4 * MAXN][3], lazy[4 * MAXN][3];
-ftype e = 0; // Identity Element
+ftype t[3][4 * MAXN];
+int lazy[3][4 * MAXN];
+ftype e = {0, 0}; // Identity Element
 
 ftype combine(ftype L, ftype R)
 {
-    return L + R;
+    return {L[0] + R[0], L[1] + R[1]};
 }
 
-void push(int v, int tl, int tr, int B)
+void push(int v, int tl, int tr, int DIM)
 {
-    if(lazy[v][B])
+    int tm = (tl + tr) >> 1;
+    if(lazy[DIM][v])
     {
-        int tm = (tl + tr) >> 1;
-        t[v << 1][B] = tm - tl + 1 - t[v << 1][B];
-        t[v << 1 | 1][B] = tr - tm - t[v << 1 | 1][B];
-        lazy[v << 1][B] ^= 1;
-        lazy[v << 1 | 1][B] ^= 1;
-        lazy[v][B] = 0;
+        swap(t[DIM][v << 1][0], t[DIM][v << 1][1]);
+        lazy[DIM][v << 1] ^= 1;
+
+        swap(t[DIM][v << 1 | 1][0], t[DIM][v << 1 | 1][1]);
+        lazy[DIM][v << 1 | 1] ^= 1;
+
+        lazy[DIM][v] = 0;
     }
 }
 
-void build(int v, int tl, int tr, int B)
+void build(int v, int tl, int tr, int DIM)
 {
     if(tl == tr)
-        t[v][B] = e, lazy[v][B] = e;
+        t[DIM][v] = {1, 0}, lazy[DIM][v] = 0;
     else
     {
         int tm = (tl + tr) >> 1;
-        build(v << 1, tl, tm, B);
-        build(v << 1 | 1, tm + 1, tr, B);
-        t[v][B] = combine(t[v << 1][B], t[v << 1 | 1][B]);
-        lazy[v][B] = e;
+        build(v << 1, tl, tm, DIM);
+        build(v << 1 | 1, tm + 1, tr, DIM);
+        t[DIM][v] = combine(t[DIM][v << 1], t[DIM][v << 1 | 1]);
+        lazy[DIM][v] = 0;
     }
 }
 
 // Range update
-void update(int v, int tl, int tr, int l, int r, int B)
+void update(int v, int tl, int tr, int l, int r, int DIM)
 {
     if(l > r) return;
+
     if(tl == l && tr == r)
     {
-        t[v][B] = tr - tl + 1 - t[v][B];
-        lazy[v][B] ^= 1;
+        swap(t[DIM][v][0], t[DIM][v][1]);
+        lazy[DIM][v] ^= 1;
     }
     else
     {
         int tm = (tl + tr) >> 1;
-        push(v, tl, tr, B);
-        update(v << 1, tl, tm, l, min(r, tm), B);
-        update(v << 1 | 1, tm + 1, tr, max(l, tm + 1), r, B);
-        t[v][B] = combine(t[v << 1][B], t[v << 1 | 1][B]);
+        push(v, tl, tr, DIM);
+        update(v << 1, tl, tm, l, min(r, tm), DIM);
+        update(v << 1 | 1, tm + 1, tr, max(l, tm + 1), r, DIM);
+        t[DIM][v] = combine(t[DIM][v << 1], t[DIM][v << 1 | 1]);
     }
 }
 
 // Range query
-ftype query(int v, int tl, int tr, int l, int r, int B)
+ftype query(int v, int tl, int tr, int l, int r, int DIM)
 {
     if(l > r) return e;
+
     if(tl == l && tr == r)
-        return t[v][B];
+        return t[DIM][v];
     else
     {
         int tm = (tl + tr) >> 1;
-        push(v, tl, tr, B);
-        ftype L = query(v << 1, tl, tm, l, min(r, tm), B);
-        ftype R = query(v << 1 | 1, tm + 1, tr, max(l, tm + 1), r, B);
+        push(v, tl, tr, DIM);
+        ftype L = query(v << 1, tl, tm, l, min(r, tm), DIM);
+        ftype R = query(v << 1 | 1, tm + 1, tr, max(l, tm + 1), r, DIM);
         return combine(L, R);
     }
 }
 
 void cp()
 {
-    int N[3], Q;
-    cin >> N[0] >> N[1] >> N[2] >> Q;
-
-    for(int i = 0; i < 3; i++)
-        build(1, 0, N[i] - 1, i);
-
+    int Nx, Ny, Nz, Q;
+    cin >> Nx >> Ny >> Nz >> Q;
+    build(1, 0, Nx - 1, 0);
+    build(1, 0, Ny - 1, 1);
+    build(1, 0, Nz - 1, 2);
     while(Q--)
     {
-        int T, a, b, c, p, q, r;
-        cin >> T;
-        if(T <= 2) cin >> a >> b;
-        else cin >> a >> b >> c >> p >> q >> r;
-        if(T <= 2) update(1, 0, N[T] - 1, a, b, T);
+        int t;
+        cin >> t;
+        if(t == 0)
+        {
+            int x, y;
+            cin >> x >> y;
+            update(1, 0, Nx - 1, x, y, 0);
+        }
+        else if(t == 1)
+        {
+            int x, y;
+            cin >> x >> y;
+            update(1, 0, Ny - 1, x, y, 1);
+        }
+        else if(t == 2)
+        {
+            int x, y;
+            cin >> x >> y;
+            update(1, 0, Nz - 1, x, y, 2);
+        }
         else
         {
-            int X = query(1, 0, N[0] - 1, a, p, 0);
-            ll A = X;
-            int Y = query(1, 0, N[1] - 1, b, q, 1);
-            ll B = A * (q - b + 1);
-            B -= Y * A;
-            B += Y * ((p - a + 1) - A);
-            int Z = query(1, 0, N[2] - 1, c, r, 2);
-            ll C = B * (r - c + 1);
-            C -= Z * B;
-            C += Z * ((q - b + 1) * 1LL * (p - a + 1) - B);
-            cout << C << endl;
+            int x1, y1, z1, x2, y2, z2;
+            cin >> x1 >> y1 >> z1 >> x2 >> y2 >> z2;
+            ll ans = 0;
+            for(int i = 0; i < 2; i++)
+                for(int j = 0; j < 2; j++)
+                    for(int k = 0; k < 2; k++)
+                        if(i ^ j ^ k)
+                            ans += query(1, 0, Nx - 1, x1, x2, 0)[i] * 1LL * query(1, 0, Ny - 1, y1, y2, 1)[j] * 1LL * query(1, 0, Nz - 1, z1, z2, 2)[k];
+            cout << ans << endl;
         }
     }
 }
