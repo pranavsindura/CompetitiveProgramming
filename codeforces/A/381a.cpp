@@ -4,28 +4,19 @@ using namespace std;
 
 int main()
 {
-    int n, x;
+    int n;
     cin >> n;
     vector<int> arr(n);
-    for (int i = 0; i < n; i++)
+    for(int &x : arr)
+        cin >> x;
+
+    int l = 0, r = n - 1, turn = 0;
+    vector<int> sum(2);
+    while(l <= r)
     {
-        cin >> arr[i];
+        if(arr[l] > arr[r]) sum[turn] += arr[l++];
+        else sum[turn] += arr[r--];
+        turn ^= 1;
     }
-    int start = 0, end = n - 1, sum[2][1] = {0}, i = 0;
-    while (start <= end)
-    {
-        if (arr[start] > arr[end])
-        {
-            sum[i][0] += arr[start];
-            start++;
-        }
-        else
-        {
-            sum[i][0] += arr[end];
-            end--;
-        }
-        i = (i+1)%2;
-    }
-    cout<<sum[0][0]<<" "<<sum[1][0];
-    return 0;
+    cout << sum[0] << " " << sum[1] << endl;
 }

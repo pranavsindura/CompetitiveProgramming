@@ -32,14 +32,14 @@ ll fpow(ll x, ll y, ll m)
     ll res = 1;
     while(y > 0)
     {
-        if(y & 1) res = (res % m * x % m) % m;
-        x = (x % m * x % m) % m;
+        if(y & 1) res = ((__uint128_t)res * x % m) % m;
+        x = ((__uint128_t)x * x % m) % m;
         y >>= 1;
     }
     return res;
 }
 
-bool is_prime_fermat(ll p, int iters = 5)
+bool is_prime_fermat(ll p, int iters = 10)
 {
     if(p < 4) return p == 2 || p == 3;
     if(p % 2 == 0) return false;
@@ -52,32 +52,39 @@ bool is_prime_fermat(ll p, int iters = 5)
 }
 
 int dp[20][20];
-bool check(string &s, int i, int j)
+bool check(string &s)
 {
-    if(i == ln(s) && j == ln(s)) return true;
-    if(j >= ln(s)) return false;
-
-    int &ret = dp[i][j];
-    if(~ret) return ret;
-
-    bool ans = false;
-    ans |= check(s, i, j + 1);
-    ll x = stoll(s.substr(i, j - i + 1));
-    if(j - i + 1 != ln(s) && (j + 1 == ln(s) || s[j + 1] != '0'))
-        ans |= is_prime_fermat(x) && check(s, j + 1, j + 1);
-    return ret = ans;
+    clr(dp, 0);
+    int n = ln(s);
+    dp[n][n] = 1;
+    ll y = 0, p = 1;
+    for(int i = n - 1; i >= 0; i--)
+    {
+        y = (s[i] - '0') * p + y;
+        p *= 10;
+        ll x = y;
+        for(int j = n - 1; j >= i; j--)
+        {
+            dp[i][j] |= dp[i][j + 1];
+            if(j - i + 1 != n && (j + 1 == n || s[j + 1] != '0'))
+                dp[i][j] |= is_prime_fermat(x) && dp[j + 1][j + 1];
+            x /= 10;
+        }
+    }
+    return dp[0][0];
 }
 
 void cp()
 {
     ll n;
     cin >> n;
-
-    string s = to_string(n);
-	clr(dp, -1);
-    while(!is_prime_fermat(n) || !check(s, 0, 0)){
-    	n++, s = to_string(n);
-    	clr(dp, -1);
+    n += n % 2 == 0;
+    while(true)
+    {
+        while(!is_prime_fermat(n)) n += 2;
+        string s = to_string(n);
+        if(!check(s)) n += 2;
+        else break;
     }
 
     cout << n << endl;
@@ -95,15 +102,3 @@ int main()
     }
     return 0;
 }
-/*
-
-preorder NLR
-inorder LNR
-postorder LRN
-
-in_order(N):
-	in_order(N->left)
-	print(N)
-	in_order(N->right)
-
-*/  
