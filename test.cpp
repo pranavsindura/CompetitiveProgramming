@@ -1,25 +1,40 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <map>
 using namespace std;
 
-const int MAXN = 1e6 + 5;
+map<pair<int, int>, int> dp;
+int solve(int row, int state, int N) {
+  if (row >= N)
+    return 1;
+  if (dp.count(make_pair(row, state))) {
+    return dp[make_pair(row, state)];
+  }
+  int occ = 0;
+  int ans = 0;
+  for (int last = state, i = row - 1; i >= 0; i--, last /= N) {
+    int pos = last % N;
+    occ |= (1 << pos);
+    int diff = row - i;
+    if (pos + diff < N) {
+      occ |= (1 << (pos + diff));
+    }
+    if (pos - diff >= 0) {
+      occ |= (1 << (pos - diff));
+    }
+  }
 
-char* findMax(int* arr, int size) {
-	char *res = new char[MAXN];
-	int p = 0;
-	for(int i = 0; i < size; i++)
-		if(arr[i] == 0) res[p++] = '0';
-		else {
-			while(arr[i]) res[p++] = char(48 + arr[i] % 10), arr[i] /= 10;
-		}
-	res[p] = '\0';
-	sort(res, res + p);
-	reverse(res, res + p);
-	return res;
+  for (int i = 0; i < N; i++) {
+    if (!((occ >> i) & 1)) {
+      ans += solve(row + 1, state * N + i, N);
+    }
+  }
+
+  return dp[make_pair(row, state)] = ans;
 }
 
-int main()
-{
-	int size = 4;
-	int arr[] = {34, 79, 58, 64};
-	cout << findMax(arr, size) << endl;
+int main() {
+  int n;
+  cin >> n;
+  int ans = solve(0, 0, n);
+  cout << ans << endl;
 }

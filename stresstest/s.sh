@@ -1,6 +1,6 @@
 for (( i = 0; ; i++ )); do
 	echo $i
-	python gen.py > in
+	python3 gen.py > in
 	# ./gen > in
 	./sol < in > out1
 	./brute < in > out2

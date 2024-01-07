@@ -1,18 +1,14 @@
-from random import randint, shuffle
+from random import randint
 
-TC = 10
-print(TC)
+TC = 1
+# print(TC)
 while TC > 0:
-	n = randint(2, 1000)
-	s = ''
-	for i in range(n):
-		s += chr(randint(0, 1) + 48)
+    n = randint(1, 1000)
+    A = []
+    for _ in range(n):
+        A.append(randint(1, 100))
 
-	x = randint(1, n // 2)
+    print(n)
+    print(*A)
 
-	print(n)
-	print(s)
-	print(x)
-
-	TC -= 1
-
+    TC -= 1
